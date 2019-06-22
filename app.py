@@ -1,5 +1,5 @@
-# import os, json
-from flask import Flask, render_template, session, redirect, request, url_for
+from flask import Flask, render_template, session, redirect, url_for, request
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_pymongo import PyMongo
 import datetime
 
@@ -12,16 +12,21 @@ mongo = PyMongo(app)
 users = mongo.db.users
 recipes = mongo.db.recipes
 
+def get_user():
+    username = None
 
-def insert_user():
+    if 'username' in session:
+        username = users.find_one({'username': session['username']})
+
+    return username
+
+
+def get_recipe():
     try:
-        users.insert_one({'email' : 'Giovanni', 
-                        'username' : 'Couto',
-                        'password' : 'password',
-                        'registration_Date' : datetime.datetime.isoformat(datetime.datetime.now())})
-        return True
+        recipe = recipes.find_one({'name': 'Pasta'})
+        return recipe
     except:
-        return False
+        return None
 
 
 def insert_recipe():
@@ -45,27 +50,36 @@ def insert_recipe():
         return False
 
 
-def retrieve_user():
-    try:
-        user = users.find_one({'username': 'Couto'})
-        return user
-    except:
-        return None
-
-
-def retrieve_recipe():
-    try:
-        recipe = recipes.find_one({'name': 'Pasta'})
-        return recipe
-    except:
-        return None
-
-
 @app.route('/')
 def index():
+    user = get_user()
+
     recipes_list = recipes.find()
     return render_template('index.html', recipes=recipes_list)
 
+
+''' Register a user on the database '''
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    username = get_user()
+
+    if request.method == 'POST':
+
+        existing_user = users.find_one({'username': request.form['username']})
+        print(request.form['username'])
+        print(existing_user)
+        
+        if existing_user:
+            return render_template('register.html', username=username, error='User already exists!')
+
+        password = generate_password_hash(request.form['password'], method='sha256')
+        users.insert_one({'username': request.form['username'],
+                        'password': password,
+                        'registration_date': datetime.datetime.isoformat(datetime.datetime.now())})
+
+        return redirect(url_for('index'))
+    
+    return render_template('register.html', username=username)
 
 
 if __name__ == '__main__':
