@@ -1,6 +1,7 @@
 from flask import Flask, render_template, session, redirect, url_for, request
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_pymongo import PyMongo
+from bson.objectid import ObjectId
 import datetime
 
 app = Flask(__name__)
@@ -64,6 +65,7 @@ def register():
     return render_template('register.html', username=username)
 
 
+# User login. Verify hashed password prior to grant access. 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     username = get_user()
@@ -78,6 +80,7 @@ def login():
         if current_user:
             if check_password_hash(current_user['password'], password):
                 session['username'] = current_user['username']
+                session['user_id'] = str(current_user['_id'])
                 return redirect(url_for('index'))
             else:
                 error = 'Username or Password is incorrect'
@@ -85,6 +88,33 @@ def login():
             error = 'Username or Password is incorrect'
     
     return render_template('login.html', username=username, error=error)
+
+
+@app.route('/new-recipe', methods=['GET', 'POST'])
+def new_recipe():
+    username = get_user()
+
+    if not username:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        textarea_ingredients = request.form['ingredients']
+        ingredients = textarea_ingredients.split('\n')
+        textarea_instructions = request.form['instructions']
+        instructions = textarea_instructions.split('\n')
+
+        recipes.insert_one({
+            'name': request.form['name'],
+            'cooking_time': request.form['cooking-time'],
+            'user_id': ObjectId(session['user_id']),
+            'ingredients': ingredients,
+            'instructions': instructions,
+            'cousine': request.form['cousine'],
+            'date': datetime.datetime.isoformat(datetime.datetime.now())})
+
+        return redirect(url_for('index'))
+
+    return render_template('new-recipe.html', username=username)
 
 
 @app.route('/logout')
