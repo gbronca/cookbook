@@ -37,6 +37,7 @@ def index():
     username = get_user()
 
     recipes_list = recipes.find()
+
     return render_template('index.html', recipes=recipes_list, username=username)
 
 
@@ -115,6 +116,23 @@ def new_recipe():
         return redirect(url_for('index'))
 
     return render_template('new-recipe.html', username=username)
+
+
+@app.route('/recipe/<recipe_id>', methods=['GET', 'POST'])
+def recipe(recipe_id):
+    username = get_user()
+    recipe = None
+    recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
+    if recipe:
+        recipe['instructions'] = ''.join(recipe['instructions'])
+        recipe['ingredients'] = ''.join(recipe['ingredients'])
+
+    if str(username['_id']) == str(recipe['user_id']):
+        recipe_owner = True
+    else:
+        recipe_owner = False
+
+    return render_template('recipe.html', username=username, recipe=recipe, recipe_owner=recipe_owner)
 
 
 @app.route('/logout')
