@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% from 'nav.html' import show_links %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Login{% endblock %}
 
 {% block nav %}
 {{ show_links(username) }}
@@ -9,11 +9,11 @@
 
 {% block content %}
 
-    <div class="page-header">
-        <h1>Register</h1>
+<div class="page-header">
+        <h1>Login</h1>
     </div>
 
-    <form method="POST" action="{{ url_for('register') }}">
+    <form method="POST" action="{{ url_for('login') }}">
         <div class="form-group">
             <label for="username">username</label>
             <input type="text" class="form-control" name="username" id="username" aria-describedby="username"
@@ -23,7 +23,7 @@
             <label for="password">Password</label>
             <input type="password" class="form-control" name="password" id="password" placeholder="Password">
         </div>
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="submit" class="btn btn-primary">Login</button>
     </form>
 
 {% endblock %}

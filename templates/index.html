@@ -4,7 +4,7 @@
 {% block title %}Recipes Home Page{% endblock %}
 
 {% block nav %}
-{{ show_links(user) }}
+{{ show_links(username) }}
 {% endblock %}
 
 {% block content %}
@@ -13,21 +13,16 @@
 
     <div class="row">
         {% for recipe in recipes %}
-        <div class="col s12 m6 l4">
-            <div class="card small">
-                <div class="card-image">
-                    <img src="images/sample-1.jpg">
-                    <span class="card-title">{{ recipe.name }}</span>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+              <div class="card">
+                <img src="#" class="card-img-top" alt="">
+                <div class="card-body">
+                  <h5 class="card-title">{{ recipe.name }}</h5>
+                  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                  <a href="#" class="btn btn-primary">{{ recipe.name }}</a>
                 </div>
-                <div class="card-content">
-                    <p>I am a very simple card. I am good at containing small bits of information.
-                        I am convenient because I require little markup to use effectively.</p>
-                </div>
-                <div class="card-action">
-                    <a href="#">{{ recipe.name }}</a>
-                </div>
+              </div>
             </div>
-        </div>
         {% endfor %}
  
     </div>

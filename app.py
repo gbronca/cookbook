@@ -12,6 +12,8 @@ mongo = PyMongo(app)
 users = mongo.db.users
 recipes = mongo.db.recipes
 
+
+''' Return the user in session. If there is no user in session, return None.'''
 def get_user():
     username = None
 
@@ -29,36 +31,16 @@ def get_recipe():
         return None
 
 
-def insert_recipe():
-    try:
-        recipes.insert_one({'name': 'Pasta',
-                            'cooking_time': 30,
-                            'preparation_time': 25,
-                            'nutrition': {
-                                'calories': 200,
-                                'carb_content': 20,
-                                'sugar_content': 15,
-                                'fat_content': 40
-                            },
-                            'category': 'Pasta',
-                            'cousine': 'Italian',
-                            'ingredients': ['Pasta', 'Tomato Sauce', 'Salt'],
-                            'instructions': ['Boil water', 'add salt', 'insert pasta', 'cook for 10 min'],
-                            'registration_Date' : datetime.datetime.isoformat(datetime.datetime.now())})
-        return True
-    except:
-        return False
-
-
 @app.route('/')
 def index():
-    user = get_user()
+    username = get_user()
 
     recipes_list = recipes.find()
-    return render_template('index.html', recipes=recipes_list)
+    return render_template('index.html', recipes=recipes_list, username=username)
 
 
-''' Register a user on the database '''
+# Register a new user.
+# Before adding the user to the database it checks first if there is no user with the same name
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     username = get_user()
@@ -80,6 +62,35 @@ def register():
         return redirect(url_for('index'))
     
     return render_template('register.html', username=username)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    username = get_user()
+    error = None
+
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        current_user = users.find_one({'username': username})
+
+        if current_user:
+            if check_password_hash(current_user['password'], password):
+                session['username'] = current_user['username']
+                return redirect(url_for('index'))
+            else:
+                error = 'Username or Password is incorrect'
+        else:
+            error = 'Username or Password is incorrect'
+    
+    return render_template('login.html', username=username, error=error)
+
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
