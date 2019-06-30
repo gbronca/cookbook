@@ -1,5 +1,6 @@
 from flask import Flask, render_template, session, redirect, url_for, request
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 import datetime
@@ -8,10 +9,33 @@ app = Flask(__name__)
 
 app.config.from_pyfile('config.cfg')
 
+app.config["ALLOWED_EXTENSIONS"] = ['jpg', 'jpeg', 'png']
+# Configures the max filesize to 1MB
+app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024
+app.config["MAX_IMAGE_FILESIZE"] = 1 * 1024 * 1024
+
 mongo = PyMongo(app)
 
 users = mongo.db.users
 recipes = mongo.db.recipes
+
+
+def allowed_files(filename):
+    
+    # Check if filename has an file extension
+    if not '.' in filename:
+        return False
+
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
+
+
+def allowed_image_filesize(filesize):
+
+    if int(filesize) <= app.config["MAX_IMAGE_FILESIZE"]:
+        return True
+    else:
+        return False
 
 
 ''' Return the user in session. If there is no user in session, return None.'''
@@ -24,20 +48,23 @@ def get_user():
     return username
 
 
-def get_recipe():
-    try:
-        recipe = recipes.find_one({'name': 'Pasta'})
-        return recipe
-    except:
-        return None
+# def get_recipe():
+#     try:
+#         recipe = recipes.find_one({'name': 'Pasta'})
+#         return recipe
+#     except:
+#         return None
+
+@app.route('/file/<image>')
+def file(image):
+    return mongo.send_file(image)
 
 
 @app.route('/')
 def index():
     username = get_user()
-
     recipes_list = recipes.find()
-
+    
     return render_template('index.html', recipes=recipes_list, username=username)
 
 
@@ -104,14 +131,33 @@ def new_recipe():
         textarea_instructions = request.form['instructions']
         instructions = textarea_instructions.split('\n')
 
-        recipes.insert_one({
+# Test if a file was submitted and it is an image file
+# via allowed_imaged function
+        if request.files:
+            image = request.files['image']
+            if image.filename != '' and allowed_files(image.filename):
+                image_filename = secure_filename(image.filename)
+        else:
+            image_filename = ''
+
+        new_recipe_id = recipes.insert_one({
             'name': request.form['name'],
             'cooking_time': request.form['cooking-time'],
             'user_id': ObjectId(session['user_id']),
             'ingredients': ingredients,
             'instructions': instructions,
+            'image': image_filename,
             'cousine': request.form['cousine'],
-            'date': datetime.datetime.isoformat(datetime.datetime.now())})
+            'create_date': datetime.datetime.isoformat(datetime.datetime.now())})
+
+# Save image file in the database if image_filename is not empty
+# and update the image filename in the recipe document.
+        if image_filename != '':
+            image_filename = str(ObjectId(new_recipe_id.inserted_id)) + image_filename
+            print(image_filename)
+            mongo.save_file(image_filename, image)
+            recipes.update_one({'_id': ObjectId(new_recipe_id.inserted_id)}, {'$set': {
+                'image': image_filename}})
 
         return redirect(url_for('index'))
 
@@ -127,10 +173,34 @@ def recipe(recipe_id):
         recipe['instructions'] = ''.join(recipe['instructions'])
         recipe['ingredients'] = ''.join(recipe['ingredients'])
 
-    if str(username['_id']) == str(recipe['user_id']):
-        recipe_owner = True
+    if username:
+        if str(username['_id']) == str(recipe['user_id']):
+            recipe_owner = True
+        else:
+            recipe_owner = False
     else:
         recipe_owner = False
+
+    if request.method == 'POST' and recipe_owner:
+        textarea_ingredients = request.form['ingredients']
+        ingredients = textarea_ingredients.split('\n')
+        textarea_instructions = request.form['instructions']
+        instructions = textarea_instructions.split('\n')
+        # image = None
+        
+        # if 'image' in request.files:
+        #     image = request.files['image']
+        #     mongo.save_file(image.filename, image)
+
+        recipe = recipes.update_one({'_id': ObjectId(recipe_id)}, {'$set': {
+            'name': request.form['name'],
+            'cooking_time': request.form['cooking-time'],
+            'ingredients': ingredients,
+            'instructions': instructions,
+            'cousine': request.form['cousine'],
+            'last_update': datetime.datetime.isoformat(datetime.datetime.now())}})
+
+        recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
 
     return render_template('recipe.html', username=username, recipe=recipe, recipe_owner=recipe_owner)
 

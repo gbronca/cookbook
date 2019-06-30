@@ -41,14 +41,20 @@
                 <label for="instructions">Instructions</label>
                 <textarea class="form-control" name="instructions" id="instructions" rows="5">{{ recipe.instructions }}</textarea>
             </div>
+            {% if recipe_owner %}                
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="image" name="image">
+                    <label class="custom-file-label" for="image">Select Recipe Photo</label>
+                </div>
+            {% endif %}
             <div class="form-group col-md-4">
                 <label for="cousine">Cousine</label>
                 <select name="cousine" id="cousine" class="form-control">
                     <option selected>Choose...</option>
-                    <option>Italian</option>
-                    <option>Chinese</option>
-                    <option>Brazilian</option>
-                    <option>Spanish</option>
+                    <option value="Italian">Italian</option>
+                    <option value="Chinese">Chinese</option>
+                    <option value="Brazilian">Brazilian</option>
+                    <option value="Spanish">Spanish</option>
                 </select>
             </div>
             {% if recipe_owner %}

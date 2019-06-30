@@ -10,7 +10,7 @@
 {% block content %}
 <div class="row">
     <div class="col-sm-12">
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="name">Name</label>
@@ -40,6 +40,10 @@
             <div class="form-group">
                 <label for="instructions">Instructions</label>
                 <textarea class="form-control" name="instructions" id="instructions" rows="5"></textarea>
+            </div>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="image" name="image">
+                <label class="custom-file-label" for="image">Select Recipe Photo</label>
             </div>
             <div class="form-group col-md-4">
                 <label for="cousine">Cousine</label>
