@@ -141,9 +141,11 @@ def new_recipe():
             image_filename = ''
 
         new_recipe_id = recipes.insert_one({
+            'user_id': ObjectId(session['user_id']),
             'name': request.form['name'],
             'cooking_time': request.form['cooking-time'],
-            'user_id': ObjectId(session['user_id']),
+            'preparation_time': request.form['preparation-time'],
+            'servings': request.form['servings'], 
             'ingredients': ingredients,
             'instructions': instructions,
             'image': image_filename,
@@ -152,9 +154,10 @@ def new_recipe():
 
 # Save image file in the database if image_filename is not empty
 # and update the image filename in the recipe document.
+# It also ensures an unique filename for each image uploaded by
+# adding the recipe's _id and the current date and time to the image's name.
         if image_filename != '':
-            image_filename = str(ObjectId(new_recipe_id.inserted_id)) + image_filename
-            print(image_filename)
+            image_filename = str(ObjectId(new_recipe_id.inserted_id)) + str(datetime.datetime.isoformat(datetime.datetime.now())) + image_filename
             mongo.save_file(image_filename, image)
             recipes.update_one({'_id': ObjectId(new_recipe_id.inserted_id)}, {'$set': {
                 'image': image_filename}})
@@ -186,15 +189,12 @@ def recipe(recipe_id):
         ingredients = textarea_ingredients.split('\n')
         textarea_instructions = request.form['instructions']
         instructions = textarea_instructions.split('\n')
-        # image = None
-        
-        # if 'image' in request.files:
-        #     image = request.files['image']
-        #     mongo.save_file(image.filename, image)
 
         recipe = recipes.update_one({'_id': ObjectId(recipe_id)}, {'$set': {
             'name': request.form['name'],
             'cooking_time': request.form['cooking-time'],
+            'preparation_time': request.form['preparation-time'],
+            'servings': request.form['servings'], 
             'ingredients': ingredients,
             'instructions': instructions,
             'cousine': request.form['cousine'],
