@@ -143,6 +143,7 @@ def new_recipe():
         new_recipe_id = recipes.insert_one({
             'user_id': ObjectId(session['user_id']),
             'name': request.form['name'],
+            'description': request.form['description'],
             'cooking_time': request.form['cooking-time'],
             'preparation_time': request.form['preparation-time'],
             'servings': request.form['servings'], 
@@ -192,6 +193,7 @@ def recipe(recipe_id):
 
         recipe = recipes.update_one({'_id': ObjectId(recipe_id)}, {'$set': {
             'name': request.form['name'],
+            'description': request.form['description'],
             'cooking_time': request.form['cooking-time'],
             'preparation_time': request.form['preparation-time'],
             'servings': request.form['servings'], 

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% from 'nav.html' import show_links %}
 
-{% block title %}New Recipe{% endblock %}
+{% block title %}Recipe{% endblock %}
 
 {% block nav %}
 {{ show_links(username) }}
@@ -21,6 +21,10 @@
                     <input type="number" class="form-control" name="cooking-time" id="cooking-time"
                         placeholder="Cooking time" value="{{ recipe.cooking_time }}">
                 </div>
+            </div>
+            <div class="form-group">
+                <label for="name">Description</label>
+                <textarea class="form-control" name="description" id="description" rows="3" maxlength="500">{{ recipe.description }}</textarea>
             </div>
             <div class="form-row">
                 <div class="form-group  col-md-6">
@@ -47,15 +51,27 @@
                     <label class="custom-file-label" for="image">Select Recipe Photo</label>
                 </div>
             {% endif %}
-            <div class="form-group col-md-4">
-                <label for="cousine">Cousine</label>
-                <select name="cousine" id="cousine" class="form-control">
-                    <option selected>Choose...</option>
-                    <option value="Italian">Italian</option>
-                    <option value="Chinese">Chinese</option>
-                    <option value="Brazilian">Brazilian</option>
-                    <option value="Spanish">Spanish</option>
-                </select>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="cousine">Cousine</label>
+                    <select name="cousine" id="cousine" class="form-control">
+                        <option selected>Choose...</option>
+                        <option value="Italian">Italian</option>
+                        <option value="Chinese">Chinese</option>
+                        <option value="Brazilian">Brazilian</option>
+                        <option value="Spanish">Spanish</option>
+                    </select>
+                </div>
+                {% if not recipe_owner %}
+                <div class="form-group form-check col-md-4">
+                    <input type="checkbox" class="form-check-input" id="love" name="love">
+                    <label class="form-check-label" for="love">Loved it!</label>
+                </div>
+                <div class="form-group form-check col-md-4">
+                    <input type="checkbox" class="form-check-input" id="cooked-it" name="cooked-it">
+                    <label class="form-check-label" for="cooked-it">I've cooked it!</label>
+                </div>
+                {% endif %}
             </div>
             {% if recipe_owner %}
                 <button type="submit" class="btn btn-primary">Update Recipe</button>
