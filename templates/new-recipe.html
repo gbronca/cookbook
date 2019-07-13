@@ -17,7 +17,7 @@
                     <input type="text" class="form-control" name="name" id="name" placeholder="Recipe's name">
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="cooking-time">Cooking time</label>
+                    <label for="cooking-time">Cooking time (in minutes)</label>
                     <input type="number" class="form-control" name="cooking-time" id="cooking-time"
                         placeholder="Cooking time">
                 </div>
@@ -28,7 +28,7 @@
             </div>
             <div class="form-row">
                 <div class="form-group  col-md-6">
-                    <label for="preparation-time">Preparation time</label>
+                    <label for="preparation-time">Preparation time (in minutes)</label>
                     <input type="number" class="form-control" name="preparation-time" id="preparation-time"
                         placeholder="Prep time">
                 </div>
@@ -50,13 +50,12 @@
                 <label class="custom-file-label" for="image">Select Recipe Photo</label>
             </div>
             <div class="form-group col-md-4">
-                <label for="cousine">Cousine</label>
-                <select name="cousine" id="cousine" class="form-control">
-                    <option selected>Choose...</option>
-                    <option>Italian</option>
-                    <option>Chinese</option>
-                    <option>Brazilian</option>
-                    <option>Spanish</option>
+                <label for="cuisine">cuisine</label>
+                <select name="cuisine" id="cuisine" class="form-control">
+                    <option value="" selected>Choose...</option>
+                    {% for cuisine in cuisines %}
+                        <option value="{{ cuisine }}">{{ cuisine }}</option>
+                    {% endfor %}
                 </select>
             </div>
             <button type="submit" class="btn btn-primary">Add Recipe</button>

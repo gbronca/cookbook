@@ -18,6 +18,7 @@ mongo = PyMongo(app)
 
 users = mongo.db.users
 recipes = mongo.db.recipes
+cuisines = mongo.db.cuisines
 
 
 def allowed_files(filename):
@@ -47,6 +48,14 @@ def get_user():
 
     return username
 
+
+'''Return a tuple of cuisines from the cuisines database'''
+def get_cuisine():
+    cuisine = cuisines.find_one()
+
+    cuisines_tuple = tuple(cuisine['cuisines'])
+
+    return cuisines_tuple
 
 # def get_recipe():
 #     try:
@@ -121,6 +130,7 @@ def login():
 @app.route('/new-recipe', methods=['GET', 'POST'])
 def new_recipe():
     username = get_user()
+    cuisines = get_cuisine()
 
     if not username:
         return redirect(url_for('login'))
@@ -150,7 +160,7 @@ def new_recipe():
             'ingredients': ingredients,
             'instructions': instructions,
             'image': image_filename,
-            'cousine': request.form['cousine'],
+            'cuisine': request.form['cuisine'],
             'create_date': datetime.datetime.isoformat(datetime.datetime.now())})
 
 # Save image file in the database if image_filename is not empty
@@ -165,7 +175,7 @@ def new_recipe():
 
         return redirect(url_for('index'))
 
-    return render_template('new-recipe.html', username=username)
+    return render_template('new-recipe.html', username=username, cuisines=cuisines)
 
 
 @app.route('/recipe/<recipe_id>', methods=['GET', 'POST'])
@@ -185,6 +195,9 @@ def recipe(recipe_id):
     else:
         recipe_owner = False
 
+    if not recipe_owner:
+        return redirect(url_for('load_recipes', recipe_id=recipe_id))
+
     if request.method == 'POST' and recipe_owner:
         textarea_ingredients = request.form['ingredients']
         ingredients = textarea_ingredients.split('\n')
@@ -199,12 +212,24 @@ def recipe(recipe_id):
             'servings': request.form['servings'], 
             'ingredients': ingredients,
             'instructions': instructions,
-            'cousine': request.form['cousine'],
+            'cuisine': request.form['cuisine'],
             'last_update': datetime.datetime.isoformat(datetime.datetime.now())}})
 
         recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
 
     return render_template('recipe.html', username=username, recipe=recipe, recipe_owner=recipe_owner)
+
+
+@app.route('/recipes/<recipe_id>')
+def load_recipes(recipe_id):
+    username = get_user()
+    recipe = None
+    recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
+    # if recipe:
+    #     recipe['instructions'] = ''.join(recipe['instructions'])
+    #     recipe['ingredients'] = ''.join(recipe['ingredients'])
+
+    return render_template('recipes.html', username=username, recipe=recipe)
 
 
 @app.route('/logout')
