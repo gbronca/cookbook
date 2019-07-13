@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% from 'nav.html' import show_links %}
 
-{% block title %}New Recipe{% endblock %}
+{% block title %}{{ recipe.name }}{% endblock %}
 
 {% block nav %}
 {{ show_links(username) }}

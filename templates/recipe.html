@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% from 'nav.html' import show_links %}
 
-{% block title %}Recipe{% endblock %}
+{% block title %}{{ recipe.name }}{% endblock %}
 
 {% block nav %}
 {{ show_links(username) }}
@@ -11,6 +11,9 @@
 <div class="row">
     <div class="col-sm-12">
         <form method="POST" action="">
+            <div class="col-sm-10 col-md-4 text-left">
+                <img src="{{ url_for('file', image=recipe['image']) }}" class="rounded" alt="{{ recipe.name }}">
+            </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="name">Name</label>
@@ -55,11 +58,13 @@
                 <div class="form-group col-md-4">
                     <label for="cuisine">cuisine</label>
                     <select name="cuisine" id="cuisine" class="form-control">
-                        <option selected>Choose...</option>
-                        <option value="Italian">Italian</option>
-                        <option value="Chinese">Chinese</option>
-                        <option value="Brazilian">Brazilian</option>
-                        <option value="Spanish">Spanish</option>
+                        {% for cuisine in cuisines %}
+                            {% if recipe.cuisine == cuisine %}
+                                <option value="{{ cuisine }}" selected>{{ cuisine }}</option>
+                            {% else %}
+                                <option value="{{ cuisine }}">{{ cuisine }}</option>
+                            {% endif %}
+                        {% endfor %}
                     </select>
                 </div>
                 {% if not recipe_owner %}

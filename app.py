@@ -181,6 +181,7 @@ def new_recipe():
 @app.route('/recipe/<recipe_id>', methods=['GET', 'POST'])
 def recipe(recipe_id):
     username = get_user()
+    cuisines = get_cuisine()
     recipe = None
     recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
     if recipe:
@@ -217,7 +218,7 @@ def recipe(recipe_id):
 
         recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
 
-    return render_template('recipe.html', username=username, recipe=recipe, recipe_owner=recipe_owner)
+    return render_template('recipe.html', username=username, recipe=recipe, recipe_owner=recipe_owner, cuisines=cuisines)
 
 
 @app.route('/recipes/<recipe_id>')
@@ -225,9 +226,6 @@ def load_recipes(recipe_id):
     username = get_user()
     recipe = None
     recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
-    # if recipe:
-    #     recipe['instructions'] = ''.join(recipe['instructions'])
-    #     recipe['ingredients'] = ''.join(recipe['ingredients'])
 
     return render_template('recipes.html', username=username, recipe=recipe)
 
