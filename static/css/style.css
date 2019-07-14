@@ -4,3 +4,8 @@
     top: 50%;
     transform: translateY(-50%);
 } */
+
+.jumbotron {
+    background: url('/static/images/background-home.jpg');
+    background-size: cover;
+}

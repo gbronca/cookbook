@@ -16,7 +16,7 @@ The idea of building a recipes website for my 4th project for the Code Institute
 
 4. A user should be able to create an account.
 
-5. **WIP** A registered user should be able to add recipes and edit the recipes he/she have added.
+5. A registered user should be able to add recipes and edit the recipes he/she have added.
 
 6. **WIP** A registered user should be able to comment on other recipes
 

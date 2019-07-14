@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% from 'nav.html' import show_links %}
+{% from '_nav.html' import show_links %}
 
 {% block title %}Recipes Home Page{% endblock %}
 
@@ -8,6 +8,14 @@
 {% endblock %}
 
 {% block content %}
+<section>
+    <div class="jumbotron jumbotron-fluid text-white">
+        <div class="container">
+            <h1 class="display-4">Healthy Cookbook</h1>
+            <p class="lead">Your collection of healty choices in the kitchen</p>
+        </div>
+    </div>
+</section>
 
 <section class="container">
 
