@@ -9,3 +9,45 @@
     background: url('/static/images/background-home.jpg');
     background-size: cover;
 }
+
+/* Recipes.html  */
+
+.ingredient-list-container {
+    border: 1px solid #eaeaea;
+    border-style: inset;
+    padding: 3%;
+
+}
+
+.recipes-image {
+    width: 250px;
+}
+
+.ingredient-list,
+.instructions-list {
+    list-style: none;
+    padding: 2px;
+}
+
+.ingredient-list-odd,
+.ingredient-list-even,
+.instruction-list-odd,
+.instruction-list-even {
+    padding: 6px 8px;
+}
+
+.ingredient-list-odd {
+    background-color: #f1f7f7;
+}
+
+.instruction-index {
+    font-weight: 500;
+    font-size: 1.3rem;
+}
+
+.instruction-list-odd,
+.instruction-list-even {
+    border-bottom: 1px solid #f0f2eb;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+}

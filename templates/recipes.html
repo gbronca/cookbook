@@ -9,45 +9,52 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-sm-12">
-        <div class="col-md-12">
-            <div class="col-sm-10 col-md-4 text-left">
-                <img src="{{ url_for('file', image=recipe['image']) }}" class="rounded" alt="{{ recipe.name }}">
-            </div>
-            <div class="col-md-8">
-                <h1>{{ recipe.name }}</h1>
-            </div>
-        </div>
-        <p>Cooking time: {{ recipe.cooking_time }}</p>
-        <br>
-        <div>{{ recipe.description }}</div>
-        <div class="col-sm-12 col-md-6">
-            <p>Ingredients</p>
-            {% for ingredient in recipe.ingredients %}
-                <div class="ingredient-list-{{ loop.cycle('odd', 'even' )}}">{{ ingredient }}</div>
-            {% endfor %}
-        </div>
-        <div class="col-sm-12 col-md-6"></div>
-            <p>Instructions</p>
-            {% for instruction in recipe.instructions %}
-                <div class="instruction-list-{{ loop.cycle('odd', 'even' )}}">{{ loop.index }} - {{ instruction }}</div>
-            {% endfor %}
-        </div>
-        <div>
-            <p>cuisine</p>
-            {{ recipe.cuisine}}
-        </div>
-        {% if recipe.likes %}
-            <div>
-                <p>{{ recipe.likes }} Likes</p>
-            </div>
-        {% endif %}
-        {% if recipe.cooked %}
-            <div>
-                <p>{{ recipe.cooked }} Cooked it</p>
-            </div>
-        {% endif %}
+    <div class="col-sm-12 col-md-4 text-left">
+        <img src="{{ url_for('file', image=recipe['image']) }}" class="rounded recipes-image" alt="{{ recipe.name }}">
     </div>
+    <div class="col-md-8">
+        <h1 class="text-center">{{ recipe.name }}</h1>
+        <p>{{ recipe.description }}</p>
+        <div class="d-flex text-center">
+            <div class="col-sm-6">Preparation time: {{ recipe.preparation_time }} minutes</div>
+            <div class="col-sm-6">Cooking time: {{ recipe.cooking_time }} minutes</div>
+        </div>
+        <div class="d-flex text-center">
+            <div class="col-sm-6">Cuisine: {{ recipe.cuisine}}</div>
+            <div class="col-sm-6">Serves: {{ recipe.servings }}</div>
+        </div>
+        <div class="text-center"></div>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <h5>Ingredients</h5>
+        <div class="ingredient-list-container">
+            <ul class="ingredient-list">
+                {% for ingredient in recipe.ingredients %}
+                <li class="ingredient-list-{{ loop.cycle('odd', 'even' )}}">{{ ingredient }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <h5>Instructions</h5>
+        <div class="instructions-container">
+            <ul class="instructions-list">
+                {% for instruction in recipe.instructions %}
+                    <li class="instruction-list-{{ loop.cycle('odd', 'even' )}}"><span class="instruction-index">{{ loop.index }}</span> - {{ instruction }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% if recipe.likes %}
+    <div>
+        <p>{{ recipe.likes }} Likes</p>
+    </div>
+    {% endif %}
+    {% if recipe.cooked %}
+    <div>
+        <p>{{ recipe.cooked }} Cooked it</p>
+    </div>
+    {% endif %}
 </div>
 
 {% endblock %}

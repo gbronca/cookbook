@@ -7,7 +7,7 @@ import datetime
 
 app = Flask(__name__)
 
-# app.config.from_pyfile('config.cfg')
+app.config.from_pyfile('config.cfg')
 
 app.config["ALLOWED_EXTENSIONS"] = ['jpg', 'jpeg', 'png']
 # Configures the max filesize to 1MB
@@ -239,5 +239,5 @@ def logout():
 if __name__ == '__main__':
     app.run()
     # app.run(host='127.0.0.1', port=5000)
-    app.secret_key = os.getenv('SECRET')
-    app.run(host=os.getenv('IP'), port=int(os.getenv('PORT')), debug=False)
+    # app.secret_key = os.getenv('SECRET')
+    # app.run(host=os.getenv('IP'), port=int(os.getenv('PORT')), debug=False)
