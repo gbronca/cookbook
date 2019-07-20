@@ -86,16 +86,21 @@ def register():
     if request.method == 'POST':
 
         existing_user = users.find_one({'username': request.form['username']})
-        print(request.form['username'])
-        print(existing_user)
         
         if existing_user:
             return render_template('register.html', username=username, error='User already exists!')
 
         password = generate_password_hash(request.form['password'], method='sha256')
-        users.insert_one({'username': request.form['username'],
+
+        new_user = users.insert_one({'username': request.form['username'],
                         'password': password,
-                        'registration_date': datetime.datetime.isoformat(datetime.datetime.now())})
+                        'registration_date': datetime.datetime.isoformat(datetime.datetime.now())}).inserted_id
+
+        # Check if new user is successfuly added to the database and if yes creates user session
+        if new_user:
+            new_user = users.find_one({'_id': ObjectId(new_user)})
+            session['username'] = new_user['username']
+            session['user_id'] = str(new_user['_id'])
 
         return redirect(url_for('index'))
     

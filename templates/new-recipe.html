@@ -10,16 +10,16 @@
 {% block content %}
 <div class="row">
     <div class="col-sm-12">
+        <h1 class="new-recipe-header" >Create New Recipe</h1>
         <form method="POST" enctype="multipart/form-data">
             <div class="form-row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-8">
                     <label for="name">Name</label>
                     <input type="text" class="form-control" name="name" id="name" placeholder="Recipe's name">
                 </div>
-                <div class="form-group col-md-6">
-                    <label for="cooking-time">Cooking time (in minutes)</label>
-                    <input type="number" class="form-control" name="cooking-time" id="cooking-time"
-                        placeholder="Cooking time">
+                <div class="form-group col-md-4">
+                    <label for="servings">Servings</label>
+                    <input type="number" class="form-control" name="servings" id="servings" placeholder="Servings">
                 </div>
             </div>
             <div class="form-group">
@@ -27,14 +27,15 @@
                 <textarea class="form-control" name="description" id="description" rows="3" maxlength="500"></textarea>
             </div>
             <div class="form-row">
-                <div class="form-group  col-md-6">
+                <div class="form-group col-md-6">
                     <label for="preparation-time">Preparation time (in minutes)</label>
                     <input type="number" class="form-control" name="preparation-time" id="preparation-time"
                         placeholder="Prep time">
                 </div>
-                <div class="form-group  col-md-6">
-                    <label for="servings">Servings</label>
-                    <input type="number" class="form-control" name="servings" id="servings" placeholder="Servings">
+                <div class="form-group col-md-6">
+                    <label for="cooking-time">Cooking time (in minutes)</label>
+                    <input type="number" class="form-control" name="cooking-time" id="cooking-time"
+                        placeholder="Cooking time">
                 </div>
             </div>
             <div class="form-group">

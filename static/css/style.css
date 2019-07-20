@@ -5,22 +5,80 @@
     transform: translateY(-50%);
 } */
 
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+
+* {
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+}
+
 .jumbotron {
     background: url('/static/images/background-home.jpg');
     background-size: cover;
 }
 
+/* New Recipes */
+
+.new-recipe-header {
+    font-size: 2.5rem;
+    padding: 20px 0;
+}
+
+/* Register */
+
+.register-header {
+    padding: 10px 0;
+}
+
+
 /* Recipes.html  */
+
+.recipes-header {
+    padding: 10px 1%;
+    background-color: #fcf4ec;
+    margin-bottom: 20px;
+}
+
+.recipes-sections {
+    padding: 15px 0 10px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px dashed #dddddd;
+}
+
+.recipes-info {
+    text-align: center;
+    color: #666;
+}
+
+.recipes-info-details {
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+.recipes-title {
+    font-weight: 600;
+    padding: 20px 8px;
+    font-size: 2.3rem;
+}
+
+.recipes-description {
+    padding: 5px 5px 15px 5px;
+}
+
+.recipes-main {
+    padding: 5px 10px 10px;
+}
 
 .ingredient-list-container {
     border: 1px solid #eaeaea;
     border-style: inset;
     padding: 3%;
-
 }
 
 .recipes-image {
-    width: 250px;
+    margin: 6px auto;
+    max-width: 100%;
+    text-align: left;
 }
 
 .ingredient-list,
@@ -41,7 +99,6 @@
 }
 
 .instruction-index {
-    font-weight: 500;
     font-size: 1.3rem;
 }
 
@@ -50,4 +107,28 @@
     border-bottom: 1px solid #f0f2eb;
     margin-bottom: 10px;
     padding-bottom: 10px;
+}
+
+.ingredient-list-container {
+    padding: 3%;
+}
+
+
+/* Media Queries */
+
+@media screen and (min-width: 568px) {
+    .recipes-header {
+        padding-bottom: 20px;
+    }
+}
+
+@media screen and (max-width: 567px) {
+    .recipes-header {
+        text-align: center;
+    }
+
+    .recipes-image {
+        max-width: 90%;
+        text-align: center;
+    }
 }

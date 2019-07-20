@@ -9,24 +9,46 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-sm-12 col-md-4 text-left">
-        <img src="{{ url_for('file', image=recipe['image']) }}" class="rounded recipes-image" alt="{{ recipe.name }}">
-    </div>
-    <div class="col-md-8">
-        <h1 class="text-center">{{ recipe.name }}</h1>
-        <p>{{ recipe.description }}</p>
-        <div class="d-flex text-center">
-            <div class="col-sm-6">Preparation time: {{ recipe.preparation_time }} minutes</div>
-            <div class="col-sm-6">Cooking time: {{ recipe.cooking_time }} minutes</div>
+    <div class="row recipes-header">
+        <div class="col-sm-12 col-md-4">
+            <img src="{{ url_for('file', image=recipe['image']) }}" class="rounded recipes-image"
+                title="{{ recipe.name }}" alt="{{ recipe.name }}">
         </div>
-        <div class="d-flex text-center">
-            <div class="col-sm-6">Cuisine: {{ recipe.cuisine}}</div>
-            <div class="col-sm-6">Serves: {{ recipe.servings }}</div>
+
+        <div class="col-md-8 recipes-info">
+            <h1 class="recipes-title">{{ recipe.name }}</h1>
+            <div class="recipes-description">
+                <p>{{ recipe.description }}</p>
+            </div>
+            <div class="d-flex recipes-info recipes-info-details">
+                <div class="col-sm-6">Cuisine: {{ recipe.cuisine}}</div>
+                <div class="col-sm-6">Serves: {{ recipe.servings }}</div>
+            </div>
+            <div class="d-flex recipes-info recipes-info-details">
+                <div class="col-sm-6">Preparation: {{ recipe.preparation_time }} mins</div>
+                <div class="col-sm-6">Cooking: {{ recipe.cooking_time }} mins</div>
+            </div>
+            <div class="d-flex recipes-info recipes-info-details">
+                <div class="col-sm-6">Stars:
+                    {% if recipe.likes %}
+                        {{ recipe.likes }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </div>
+                <div class="col-sm-6">Cooked it:
+                    {% if recipe.cooked %}
+                        {{ recipe.cooked }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </div>
+            </div>
         </div>
-        <div class="text-center"></div>
     </div>
+<div class="row recipes-main">
     <div class="col-sm-12 col-md-6">
-        <h5>Ingredients</h5>
+        <h3 class="recipes-sections">Ingredients</h3>
         <div class="ingredient-list-container">
             <ul class="ingredient-list">
                 {% for ingredient in recipe.ingredients %}
@@ -35,26 +57,18 @@
             </ul>
         </div>
     </div>
+
     <div class="col-sm-12 col-md-6">
-        <h5>Instructions</h5>
+        <h3 class="recipes-sections">Instructions</h3>
         <div class="instructions-container">
             <ul class="instructions-list">
                 {% for instruction in recipe.instructions %}
-                    <li class="instruction-list-{{ loop.cycle('odd', 'even' )}}"><span class="instruction-index">{{ loop.index }}</span> - {{ instruction }}</li>
+                    <li class="instruction-list-{{ loop.cycle('odd', 'even' )}}"><strong><span class="instruction-index">{{ loop.index }}</span></strong> - {{ instruction }}</li>
                 {% endfor %}
             </ul>
         </div>
     </div>
-    {% if recipe.likes %}
-    <div>
-        <p>{{ recipe.likes }} Likes</p>
-    </div>
-    {% endif %}
-    {% if recipe.cooked %}
-    <div>
-        <p>{{ recipe.cooked }} Cooked it</p>
-    </div>
-    {% endif %}
+</div>
 </div>
 
 {% endblock %}
