@@ -24,6 +24,13 @@
     padding: 20px 0;
 }
 
+/* Recipe */
+
+.recipe-image {
+    max-width: 100%;
+    padding-bottom: 10px;
+}
+
 /* Register */
 
 .register-header {
@@ -112,7 +119,6 @@
 .ingredient-list-container {
     padding: 3%;
 }
-
 
 /* Media Queries */
 

@@ -8,11 +8,12 @@
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-sm-12">
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-10">
+        <h1 class="new-recipe-header" >Edit {{ recipe.name }}</h1>
         <form method="POST" action="">
             <div class="col-sm-10 col-md-4 text-left">
-                <img src="{{ url_for('file', image=recipe['image']) }}" class="rounded" alt="{{ recipe.name }}">
+                <img src="{{ url_for('file', image=recipe['image']) }}" class="rounded recipe-image" alt="{{ recipe.name }}">
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">

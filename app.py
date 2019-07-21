@@ -235,6 +235,16 @@ def load_recipes(recipe_id):
     return render_template('recipes.html', username=username, recipe=recipe)
 
 
+@app.route('/user')
+def user():
+    username = get_user()
+
+    user_recipes = recipes.find({'user_id': ObjectId(username['_id'])})
+
+    return render_template('user.html', username=username, user_recipes=user_recipes)
+
+
+
 @app.route('/logout')
 def logout():
     session.pop('username', None)
