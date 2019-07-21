@@ -57,12 +57,6 @@ def get_cuisine():
 
     return cuisines_tuple
 
-# def get_recipe():
-#     try:
-#         recipe = recipes.find_one({'name': 'Pasta'})
-#         return recipe
-#     except:
-#         return None
 
 @app.route('/file/<image>')
 def file(image):
@@ -86,6 +80,18 @@ def find_recipe():
         return render_template('search.html', recipes=searched_recipes, username=username)
     
     return redirect(url_for('index'))
+
+
+@app.route('/delete/<recipe_id>', methods=['GET','POST'])
+def delete_recipe(recipe_id):
+    username = get_user()
+    recipe_to_delete = recipes.find_one({'_id': ObjectId(recipe_id)})
+        
+    if str(username['_id']) == str(recipe_to_delete['user_id']):
+        recipes.delete_one({'_id': ObjectId(recipe_id)})
+
+    return redirect(url_for('index'))
+
 
 # Register a new user.
 # Before adding the user to the database it checks first if there is no user with the same name
@@ -155,6 +161,8 @@ def new_recipe():
         ingredients = textarea_ingredients.split('\n')
         textarea_instructions = request.form['instructions']
         instructions = textarea_instructions.split('\n')
+
+        image_filename = ''
 
 # Test if a file was submitted and it is an image file
 # via allowed_imaged function
@@ -252,7 +260,6 @@ def user():
     user_recipes = recipes.find({'user_id': ObjectId(username['_id'])})
 
     return render_template('user.html', username=username, user_recipes=user_recipes)
-
 
 
 @app.route('/logout')
