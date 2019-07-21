@@ -77,6 +77,16 @@ def index():
     return render_template('index.html', recipes=recipes_list, username=username)
 
 
+@app.route('/search', methods=['GET', 'POST'])
+def find_recipe():
+    username = get_user()
+    if request.method == 'POST':
+        searched_recipes = recipes.find({'$text': {'$search': request.form['search']}}).sort('name')
+
+        return render_template('search.html', recipes=searched_recipes, username=username)
+    
+    return redirect(url_for('index'))
+
 # Register a new user.
 # Before adding the user to the database it checks first if there is no user with the same name
 @app.route('/register', methods=['GET', 'POST'])
