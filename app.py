@@ -220,7 +220,7 @@ def recipe(recipe_id):
         recipe_owner = False
 
     if not recipe_owner:
-        return redirect(url_for('load_recipes', recipe_id=recipe_id))
+        return redirect(url_for('load_recipes', recipe_id=recipe_id, username=username))
 
     if request.method == 'POST' and recipe_owner:
         textarea_ingredients = request.form['ingredients']
@@ -252,6 +252,81 @@ def load_recipes(recipe_id):
 
     return render_template('recipes.html', username=username, recipe=recipe)
 
+
+@app.route('/likes/<recipe_id>')
+def likes(recipe_id):
+    username = get_user()
+    recipe = None
+    likes = 0
+    recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
+    
+    key = 'likes'
+    if key in recipe:
+        likes = recipe['likes']
+
+    if username:
+        if 'likes' in username:
+            if ObjectId(recipe_id) in username['likes']:
+                recipe = recipes.update_one({'_id': ObjectId(recipe_id)}, {'$set': {
+                    'likes': likes - 1
+                }})
+                user = users.update_one({'_id': ObjectId(username['_id'])}, {'$pull': {
+                    'likes': ObjectId(recipe_id)
+                }})
+            else:
+                recipe = recipes.update_one({'_id': ObjectId(recipe_id)}, {'$set': {
+                    'likes': likes + 1
+                }})
+                user = users.update_one({'_id': ObjectId(username['_id'])}, {'$addToSet': {
+                    'likes': ObjectId(recipe_id)
+                }})
+        else:
+            recipe = recipes.update_one({'_id': ObjectId(recipe_id)}, {'$set': {
+                'likes': likes + 1
+            }})
+            user = users.update_one({'_id': ObjectId(username['_id'])}, {'$addToSet': {
+                'likes': ObjectId(recipe_id)
+            }})
+    
+    return redirect(url_for('load_recipes', recipe_id=recipe_id, username=username))
+
+
+@app.route('/cooked/<recipe_id>')
+def cooked(recipe_id):
+    username = get_user()
+    recipe = None
+    cooked = 0
+    recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
+    
+    key = 'cooked'
+    if key in recipe:
+        cooked = recipe['cooked']
+
+    if username:
+        if 'cooked' in username:
+            if ObjectId(recipe_id) in username['cooked']:
+                recipe = recipes.update_one({'_id': ObjectId(recipe_id)}, {'$set': {
+                    'cooked': cooked - 1
+                }})
+                user = users.update_one({'_id': ObjectId(username['_id'])}, {'$pull': {
+                    'cooked': ObjectId(recipe_id)
+                }})
+            else:
+                recipe = recipes.update_one({'_id': ObjectId(recipe_id)}, {'$set': {
+                    'cooked': cooked + 1
+                }})
+                user = users.update_one({'_id': ObjectId(username['_id'])}, {'$addToSet': {
+                    'cooked': ObjectId(recipe_id)
+                }})
+        else:
+            recipe = recipes.update_one({'_id': ObjectId(recipe_id)}, {'$set': {
+                'cooked': cooked + 1
+            }})
+            user = users.update_one({'_id': ObjectId(username['_id'])}, {'$addToSet': {
+                'cooked': ObjectId(recipe_id)
+            }})
+    
+    return redirect(url_for('load_recipes', recipe_id=recipe_id, username=username))
 
 @app.route('/user')
 def user():

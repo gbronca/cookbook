@@ -21,7 +21,7 @@
                 <p>{{ recipe.description }}</p>
             </div>
             <div class="d-flex recipes-info recipes-info-details">
-                <div class="col-sm-6">Cuisine: {{ recipe.cuisine}}</div>
+                <div class="col-sm-6">Cuisine: {{ recipe.cuisine }}</div>
                 <div class="col-sm-6">Serves: {{ recipe.servings }}</div>
             </div>
             <div class="d-flex recipes-info recipes-info-details">
@@ -29,14 +29,18 @@
                 <div class="col-sm-6">Cooking: {{ recipe.cooking_time }} mins</div>
             </div>
             <div class="d-flex recipes-info recipes-info-details">
-                <div class="col-sm-6">Stars:
+                <div class="col-sm-6">
+                    <a href="{{ url_for('likes', recipe_id=recipe['_id']) }}">
+                        <i class="fas fa-star fa-lg"></i> </a>
                     {% if recipe.likes %}
                         {{ recipe.likes }}
                     {% else %}
                         0
                     {% endif %}
                 </div>
-                <div class="col-sm-6">Cooked it:
+                <div class="col-sm-6">
+                    <a href="{{ url_for('cooked', recipe_id=recipe['_id']) }}">
+                        <i class="fas fa-utensils fa-lg"></i> </a>
                     {% if recipe.cooked %}
                         {{ recipe.cooked }}
                     {% else %}
