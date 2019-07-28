@@ -12,6 +12,11 @@
     font-family: 'Open Sans', sans-serif;
 }
 
+.footer {
+    position: absolute;
+    bottom: 0;
+}
+
 .jumbotron {
     background: url('/static/images/background-home.jpg');
     background-size: cover;
@@ -37,6 +42,12 @@
     padding: 10px 0;
 }
 
+
+/* Recipe */
+
+.recipe-form {
+    padding-bottom: 60px;
+}
 
 /* Recipes.html  */
 
@@ -74,6 +85,14 @@
 
 .recipes-main {
     padding: 5px 10px 10px;
+}
+
+.popularity-links {
+    color: #28A745;
+}
+
+.popularity-links:hover {
+    color: #DD3545;
 }
 
 .ingredient-list-container {
@@ -119,6 +138,7 @@
 .ingredient-list-container {
     padding: 3%;
 }
+
 
 /* Media Queries */
 

@@ -84,11 +84,11 @@ def find_recipe():
 
 @app.route('/delete/<recipe_id>', methods=['GET','POST'])
 def delete_recipe(recipe_id):
-    username = get_user()
+    user = get_user()
     recipe_to_delete = recipes.find_one({'_id': ObjectId(recipe_id)})
         
-    if str(username['_id']) == str(recipe_to_delete['user_id']):
-        recipes.delete_one({'_id': ObjectId(recipe_id)})
+    if (str(user['_id']) == str(recipe_to_delete['user_id'])) and (str(recipe_to_delete['_id']) == recipe_id):
+        recipe = recipes.delete_one({'_id': ObjectId(recipe_id)})
 
     return redirect(url_for('index'))
 
@@ -244,6 +244,7 @@ def recipe(recipe_id):
     return render_template('recipe.html', username=username, recipe=recipe, recipe_owner=recipe_owner, cuisines=cuisines)
 
 
+# Opens the recipe page
 @app.route('/recipes/<recipe_id>')
 def load_recipes(recipe_id):
     username = get_user()
@@ -253,6 +254,7 @@ def load_recipes(recipe_id):
     return render_template('recipes.html', username=username, recipe=recipe)
 
 
+# Adds or removes a like from a recipe
 @app.route('/likes/<recipe_id>')
 def likes(recipe_id):
     username = get_user()
@@ -260,11 +262,14 @@ def likes(recipe_id):
     likes = 0
     recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
     
+    # Checks if the recipe has any likes
     key = 'likes'
     if key in recipe:
         likes = recipe['likes']
 
+    # Checks if the user is logged in. Only logged in users can add likes to a recipe
     if username:
+        # Tests if user has liked any recipe. If yes, checks if the user has liked the current recipe
         if 'likes' in username:
             if ObjectId(recipe_id) in username['likes']:
                 recipe = recipes.update_one({'_id': ObjectId(recipe_id)}, {'$set': {
@@ -291,6 +296,7 @@ def likes(recipe_id):
     return redirect(url_for('load_recipes', recipe_id=recipe_id, username=username))
 
 
+# Adds or removes a cooked point from the recipe
 @app.route('/cooked/<recipe_id>')
 def cooked(recipe_id):
     username = get_user()
@@ -328,6 +334,8 @@ def cooked(recipe_id):
     
     return redirect(url_for('load_recipes', recipe_id=recipe_id, username=username))
 
+
+# List all recipes for the user
 @app.route('/user')
 def user():
     username = get_user()

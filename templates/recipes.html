@@ -30,8 +30,14 @@
             </div>
             <div class="d-flex recipes-info recipes-info-details">
                 <div class="col-sm-6">
-                    <a href="{{ url_for('likes', recipe_id=recipe['_id']) }}">
-                        <i class="fas fa-star fa-lg"></i> </a>
+                    {% if username %}
+                        <a class="popularity-links" href="{{ url_for('likes', recipe_id=recipe['_id']) }}">
+                    {% endif %}
+                        {% if recipe._id in username.likes %}
+                            <i class="fas fa-star fa-lg"></i> </a>
+                        {% else %}
+                            <i class="far fa-star fa-lg"></i> </a>
+                        {% endif %}
                     {% if recipe.likes %}
                         {{ recipe.likes }}
                     {% else %}
@@ -39,8 +45,14 @@
                     {% endif %}
                 </div>
                 <div class="col-sm-6">
-                    <a href="{{ url_for('cooked', recipe_id=recipe['_id']) }}">
-                        <i class="fas fa-utensils fa-lg"></i> </a>
+                    {% if username %}
+                        <a class="popularity-links" href="{{ url_for('cooked', recipe_id=recipe['_id']) }}">
+                    {% endif %}
+                        {% if recipe._id in username.cooked %}
+                            <i class="fas fa-utensils fa-lg"></i> </a>
+                        {% else %}
+                            <i class="fas fa-birthday-cake fa-lg"></i> </a>
+                        {% endif %}
                     {% if recipe.cooked %}
                         {{ recipe.cooked }}
                     {% else %}
