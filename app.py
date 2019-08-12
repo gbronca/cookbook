@@ -49,8 +49,9 @@ def get_user():
     return username
 
 
-'''Return a tuple of cuisines from the cuisines database'''
+
 def get_cuisine():
+    '''Return a tuple of cuisines from the cuisines database'''
     cuisine = cuisines.find_one()
 
     cuisines_tuple = tuple(cuisine['cuisines'])
@@ -240,6 +241,9 @@ def recipe(recipe_id):
             'last_update': datetime.datetime.isoformat(datetime.datetime.now())}})
 
         recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
+        if recipe:
+            recipe['instructions'] = ''.join(recipe['instructions'])
+            recipe['ingredients'] = ''.join(recipe['ingredients'])
 
     return render_template('recipe.html', username=username, recipe=recipe, recipe_owner=recipe_owner, cuisines=cuisines)
 

@@ -31,14 +31,19 @@
                                     class="btn btn-primary">Edit</a>
                             </div>
                             <div class="col-6">
-                                <a href="{{ url_for('delete_recipe', recipe_id=recipe['_id']) }}"
-                                    class="btn btn-danger">Delete</a>
+                                <!-- <a href="{{ url_for('delete_recipe', recipe_id=recipe['_id']) }}"
+                                    class="btn btn-danger">Delete</a> -->
+                                <button type="button" class="btn btn-danger" data-toggle="modal"
+                                    data-target="#modal-delete{{ recipe._id }}">Delete</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <form method="POST" action="{{ url_for('user', user_recipes=user_recipes ) }}">
+            {% include '_modal.html' %}
+        </form>
         {% endfor %}
     </div>
 </div>
