@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, session, redirect, url_for, request
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
@@ -22,9 +23,9 @@ cuisines = mongo.db.cuisines
 
 
 def allowed_files(filename):
-    
+
     # Check if filename has an file extension
-    if not '.' in filename:
+    if '.' not in filename:
         return False
 
     return '.' in filename and \
@@ -39,15 +40,15 @@ def allowed_image_filesize(filesize):
         return False
 
 
-''' Return the user in session. If there is no user in session, return None.'''
 def get_user():
+    ''' Return the user in session.
+    If there is no user in session, return None.'''
     username = None
 
     if 'username' in session:
         username = users.find_one({'username': session['username']})
 
     return username
-
 
 
 def get_cuisine():
@@ -68,8 +69,10 @@ def file(image):
 def index():
     username = get_user()
     recipes_list = recipes.find()
-    
-    return render_template('index.html', recipes=recipes_list, username=username)
+
+    return render_template('index.html',
+                           recipes=recipes_list,
+                           username=username)
 
 
 @app.route('/search', methods=['GET', 'POST'])
@@ -78,16 +81,18 @@ def find_recipe():
     if request.method == 'POST':
         searched_recipes = recipes.find({'$text': {'$search': request.form['search']}}).sort('name')
 
-        return render_template('search.html', recipes=searched_recipes, username=username)
-    
+        return render_template('search.html',
+                               recipes=searched_recipes,
+                               username=username)
+
     return redirect(url_for('index'))
 
 
-@app.route('/delete/<recipe_id>', methods=['GET','POST'])
+@app.route('/delete/<recipe_id>', methods=['GET', 'POST'])
 def delete_recipe(recipe_id):
     user = get_user()
     recipe_to_delete = recipes.find_one({'_id': ObjectId(recipe_id)})
-        
+
     if (str(user['_id']) == str(recipe_to_delete['user_id'])) and (str(recipe_to_delete['_id']) == recipe_id):
         recipe = recipes.delete_one({'_id': ObjectId(recipe_id)})
 
@@ -95,7 +100,8 @@ def delete_recipe(recipe_id):
 
 
 # Register a new user.
-# Before adding the user to the database it checks first if there is no user with the same name
+# Before adding the user to the database it checks
+# first if there is no user with the same name
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     username = get_user()
@@ -103,28 +109,29 @@ def register():
     if request.method == 'POST':
 
         existing_user = users.find_one({'username': request.form['username']})
-        
+
         if existing_user:
             return render_template('register.html', username=username, error='User already exists!')
 
         password = generate_password_hash(request.form['password'], method='sha256')
 
         new_user = users.insert_one({'username': request.form['username'],
-                        'password': password,
-                        'registration_date': datetime.datetime.isoformat(datetime.datetime.now())}).inserted_id
+                                     'password': password,
+                                     'registration_date': datetime.datetime.isoformat(datetime.datetime.now())}).inserted_id
 
-        # Check if new user is successfuly added to the database and if yes creates user session
+        # Check if new user is successfuly added to
+        # the database and if yes creates user session
         if new_user:
             new_user = users.find_one({'_id': ObjectId(new_user)})
             session['username'] = new_user['username']
             session['user_id'] = str(new_user['_id'])
 
         return redirect(url_for('index'))
-    
+
     return render_template('register.html', username=username)
 
 
-# User login. Verify hashed password prior to grant access. 
+# User login. Verify hashed password prior to grant access.
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     username = get_user()
@@ -145,7 +152,7 @@ def login():
                 error = 'Username or Password is incorrect'
         else:
             error = 'Username or Password is incorrect'
-    
+
     return render_template('login.html', username=username, error=error)
 
 
@@ -180,7 +187,7 @@ def new_recipe():
             'description': request.form['description'],
             'cooking_time': request.form['cooking-time'],
             'preparation_time': request.form['preparation-time'],
-            'servings': request.form['servings'], 
+            'servings': request.form['servings'],
             'ingredients': ingredients,
             'instructions': instructions,
             'image': image_filename,
@@ -199,7 +206,9 @@ def new_recipe():
 
         return redirect(url_for('index'))
 
-    return render_template('new-recipe.html', username=username, cuisines=cuisines)
+    return render_template('new-recipe.html',
+                           username=username,
+                           cuisines=cuisines)
 
 
 @app.route('/recipe/<recipe_id>', methods=['GET', 'POST'])
@@ -234,7 +243,7 @@ def recipe(recipe_id):
             'description': request.form['description'],
             'cooking_time': request.form['cooking-time'],
             'preparation_time': request.form['preparation-time'],
-            'servings': request.form['servings'], 
+            'servings': request.form['servings'],
             'ingredients': ingredients,
             'instructions': instructions,
             'cuisine': request.form['cuisine'],
@@ -265,7 +274,7 @@ def likes(recipe_id):
     recipe = None
     likes = 0
     recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
-    
+
     # Checks if the recipe has any likes
     key = 'likes'
     if key in recipe:
@@ -296,8 +305,10 @@ def likes(recipe_id):
             user = users.update_one({'_id': ObjectId(username['_id'])}, {'$addToSet': {
                 'likes': ObjectId(recipe_id)
             }})
-    
-    return redirect(url_for('load_recipes', recipe_id=recipe_id, username=username))
+
+    return redirect(url_for('load_recipes',
+                            recipe_id=recipe_id,
+                            username=username))
 
 
 # Adds or removes a cooked point from the recipe
@@ -307,7 +318,7 @@ def cooked(recipe_id):
     recipe = None
     cooked = 0
     recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
-    
+
     key = 'cooked'
     if key in recipe:
         cooked = recipe['cooked']
@@ -325,18 +336,19 @@ def cooked(recipe_id):
                 recipe = recipes.update_one({'_id': ObjectId(recipe_id)}, {'$set': {
                     'cooked': cooked + 1
                 }})
-                user = users.update_one({'_id': ObjectId(username['_id'])}, {'$addToSet': {
-                    'cooked': ObjectId(recipe_id)
-                }})
+                user = users.update_one({'_id': ObjectId(username['_id'])},
+                                        {'$addToSet': {
+                                            'cooked': ObjectId(recipe_id)}})
         else:
-            recipe = recipes.update_one({'_id': ObjectId(recipe_id)}, {'$set': {
-                'cooked': cooked + 1
-            }})
-            user = users.update_one({'_id': ObjectId(username['_id'])}, {'$addToSet': {
-                'cooked': ObjectId(recipe_id)
-            }})
-    
-    return redirect(url_for('load_recipes', recipe_id=recipe_id, username=username))
+            recipe = recipes.update_one({'_id': ObjectId(recipe_id)}, {'$set':
+                                        {'cooked': cooked + 1}})
+            user = users.update_one({'_id': ObjectId(username['_id'])},
+                                    {'$addToSet': {
+                                        'cooked': ObjectId(recipe_id)}})
+
+    return redirect(url_for('load_recipes',
+                            recipe_id=recipe_id,
+                            username=username))
 
 
 # List all recipes for the user
@@ -346,7 +358,9 @@ def user():
 
     user_recipes = recipes.find({'user_id': ObjectId(username['_id'])})
 
-    return render_template('user.html', username=username, user_recipes=user_recipes)
+    return render_template('user.html',
+                           username=username,
+                           user_recipes=user_recipes)
 
 
 @app.route('/logout')
@@ -356,7 +370,6 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run()
-    # app.run(host='127.0.0.1', port=5000)
-    # app.secret_key = os.getenv('SECRET')
-    # app.run(host=os.getenv('IP'), port=int(os.getenv('PORT')), debug=False)
+    app.run(host=os.environ.get('IP'),
+            port=os.environ.get('PORT'),
+            debug=os.environ.get('DEBUG'))
