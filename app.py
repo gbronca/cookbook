@@ -8,7 +8,11 @@ import datetime
 
 app = Flask(__name__)
 
-app.config.from_pyfile('config.cfg')
+# app.config.from_pyfile('config.cfg')
+app.config['MONGO_DBNAME'] = os.environ.get("MONGO_DBNAME")
+app.config['MONGO_URI'] = os.environ.get("MONGO_URI")
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+app.config['DEBUG'] = os.environ.get("DEBUG")
 
 app.config["ALLOWED_EXTENSIONS"] = ['jpg', 'jpeg', 'png']
 # Configures the max filesize to 1MB
