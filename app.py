@@ -1,5 +1,6 @@
 import os
 from flask import Flask, render_template, session, redirect, url_for, request
+from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from flask_pymongo import PyMongo
@@ -7,6 +8,7 @@ from bson.objectid import ObjectId
 import datetime
 
 app = Flask(__name__)
+CORS(app)
 
 # app.config.from_pyfile('config.cfg')
 app.config['MONGO_DBNAME'] = os.environ.get("MONGO_DBNAME")
@@ -375,5 +377,5 @@ def logout():
 
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),
-            port=os.environ.get('PORT'),
+            port=int(os.environ.get('PORT')),
             debug=os.environ.get('DEBUG'))
