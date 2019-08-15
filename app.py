@@ -8,7 +8,7 @@ from bson.objectid import ObjectId
 import datetime
 
 app = Flask(__name__)
-# CORS(app)
+CORS(app)
 
 # app.config.from_pyfile('config.cfg')
 app.config['MONGO_DBNAME'] = os.getenv("MONGO_DBNAME")
@@ -376,6 +376,6 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',
-            port=int(os.environ.get('PORT', 5000)),
-            debug=os.environ.get('DEBUG'))
+    app.run(host=os.getenv('IP'),
+            port=int(os.getenv('PORT', 5000)),
+            debug=os.getenv('DEBUG'))
