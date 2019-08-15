@@ -8,7 +8,7 @@ from bson.objectid import ObjectId
 import datetime
 
 app = Flask(__name__)
-CORS(app)
+# CORS(app)
 
 # app.config.from_pyfile('config.cfg')
 app.config['MONGO_DBNAME'] = os.environ.get("MONGO_DBNAME")
