@@ -30,19 +30,21 @@ cuisines = mongo.db.cuisines
 def allowed_files(filename):
 
     # Check if filename has an file extension
-    if '.' not in filename:
-        return False
+    # if '.' not in filename:
+    #     return False
 
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
+    # return '.' in filename and \
+    #        filename.rsplit('.', 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
+    pass
 
 
 def allowed_image_filesize(filesize):
 
-    if int(filesize) <= app.config["MAX_IMAGE_FILESIZE"]:
-        return True
-    else:
-        return False
+    # if int(filesize) <= app.config["MAX_IMAGE_FILESIZE"]:
+    #     return True
+    # else:
+    #     return False
+    pass
 
 
 def get_user():
@@ -197,7 +199,8 @@ def new_recipe():
             'instructions': instructions,
             'image': image_filename,
             'cuisine': request.form['cuisine'],
-            'create_date': datetime.datetime.isoformat(datetime.datetime.now())})
+            'create_date': datetime.datetime.isoformat(datetime.datetime.now())
+            })
 
 # Save image file in the database if image_filename is not empty
 # and update the image filename in the recipe document.
@@ -206,8 +209,8 @@ def new_recipe():
         if image_filename != '':
             image_filename = str(ObjectId(new_recipe_id.inserted_id)) + str(datetime.datetime.isoformat(datetime.datetime.now())) + image_filename
             mongo.save_file(image_filename, image)
-            recipes.update_one({'_id': ObjectId(new_recipe_id.inserted_id)}, {'$set': {
-                'image': image_filename}})
+            recipes.update_one({'_id': ObjectId(new_recipe_id.inserted_id)},
+                               {'$set': {'image': image_filename}})
 
         return redirect(url_for('index'))
 
@@ -235,7 +238,8 @@ def recipe(recipe_id):
         recipe_owner = False
 
     if not recipe_owner:
-        return redirect(url_for('load_recipes', recipe_id=recipe_id, username=username))
+        return redirect(url_for('load_recipes', recipe_id=recipe_id,
+                        username=username))
 
     if request.method == 'POST' and recipe_owner:
         textarea_ingredients = request.form['ingredients']
@@ -259,7 +263,8 @@ def recipe(recipe_id):
             recipe['instructions'] = ''.join(recipe['instructions'])
             recipe['ingredients'] = ''.join(recipe['ingredients'])
 
-    return render_template('recipe.html', username=username, recipe=recipe, recipe_owner=recipe_owner, cuisines=cuisines)
+    return render_template('recipe.html', username=username, recipe=recipe,
+                           recipe_owner=recipe_owner, cuisines=cuisines)
 
 
 # Opens the recipe page
@@ -285,31 +290,29 @@ def likes(recipe_id):
     if key in recipe:
         likes = recipe['likes']
 
-    # Checks if the user is logged in. Only logged in users can add likes to a recipe
+    # Checks if the user is logged in.
+    # Only logged in users can add likes to a recipe
     if username:
-        # Tests if user has liked any recipe. If yes, checks if the user has liked the current recipe
+        # Tests if user has liked any recipe.
+        # If yes, checks if the user has liked the current recipe
         if 'likes' in username:
             if ObjectId(recipe_id) in username['likes']:
-                recipe = recipes.update_one({'_id': ObjectId(recipe_id)}, {'$set': {
-                    'likes': likes - 1
-                }})
-                user = users.update_one({'_id': ObjectId(username['_id'])}, {'$pull': {
-                    'likes': ObjectId(recipe_id)
-                }})
+                recipe = recipes.update_one({'_id': ObjectId(recipe_id)},
+                                            {'$set': {'likes': likes - 1}})
+                user = users.update_one({'_id': ObjectId(username['_id'])},
+                                        {'$pull': {'likes': ObjectId(recipe_id)}})
             else:
-                recipe = recipes.update_one({'_id': ObjectId(recipe_id)}, {'$set': {
-                    'likes': likes + 1
-                }})
-                user = users.update_one({'_id': ObjectId(username['_id'])}, {'$addToSet': {
-                    'likes': ObjectId(recipe_id)
-                }})
+                recipe = recipes.update_one({'_id': ObjectId(recipe_id)},
+                                            {'$set': {'likes': likes + 1}})
+                user = users.update_one({'_id': ObjectId(username['_id'])},
+                                        {'$addToSet': {
+                                            'likes': ObjectId(recipe_id)}})
         else:
             recipe = recipes.update_one({'_id': ObjectId(recipe_id)}, {'$set': {
                 'likes': likes + 1
             }})
-            user = users.update_one({'_id': ObjectId(username['_id'])}, {'$addToSet': {
-                'likes': ObjectId(recipe_id)
-            }})
+            user = users.update_one({'_id': ObjectId(username['_id'])},
+                                    {'$addToSet': {'likes': ObjectId(recipe_id)}})
 
     return redirect(url_for('load_recipes',
                             recipe_id=recipe_id,
@@ -331,16 +334,13 @@ def cooked(recipe_id):
     if username:
         if 'cooked' in username:
             if ObjectId(recipe_id) in username['cooked']:
-                recipe = recipes.update_one({'_id': ObjectId(recipe_id)}, {'$set': {
-                    'cooked': cooked - 1
-                }})
-                user = users.update_one({'_id': ObjectId(username['_id'])}, {'$pull': {
-                    'cooked': ObjectId(recipe_id)
-                }})
+                recipe = recipes.update_one({'_id': ObjectId(recipe_id)},
+                                            {'$set': {'cooked': cooked - 1}})
+                user = users.update_one({'_id': ObjectId(username['_id'])},
+                                        {'$pull': {'cooked': ObjectId(recipe_id)}})
             else:
-                recipe = recipes.update_one({'_id': ObjectId(recipe_id)}, {'$set': {
-                    'cooked': cooked + 1
-                }})
+                recipe = recipes.update_one({'_id': ObjectId(recipe_id)},
+                                            {'$set': {'cooked': cooked + 1}})
                 user = users.update_one({'_id': ObjectId(username['_id'])},
                                         {'$addToSet': {
                                             'cooked': ObjectId(recipe_id)}})
@@ -377,4 +377,4 @@ def logout():
 if __name__ == '__main__':
     app.run(host=os.getenv('IP'),
             port=int(os.getenv('PORT', 5000)),
-            debug=False)
+            debug=True)
