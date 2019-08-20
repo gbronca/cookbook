@@ -70,7 +70,7 @@ def file(image):
     return mongo.send_file(image)
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
     username = get_user()
     recipes_list = recipes.find()
