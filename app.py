@@ -29,22 +29,20 @@ cuisines = mongo.db.cuisines
 
 def allowed_files(filename):
 
-    # Check if filename has an file extension
-    # if '.' not in filename:
-    #     return False
+    Check if filename has an file extension
+    if '.' not in filename:
+        return False
 
-    # return '.' in filename and \
-    #        filename.rsplit('.', 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
-    pass
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
 
 
 def allowed_image_filesize(filesize):
 
-    # if int(filesize) <= app.config["MAX_IMAGE_FILESIZE"]:
-    #     return True
-    # else:
-    #     return False
-    pass
+    if int(filesize) <= app.config["MAX_IMAGE_FILESIZE"]:
+        return True
+    else:
+        return False
 
 
 def get_user():
@@ -376,5 +374,5 @@ def logout():
 
 if __name__ == '__main__':
     app.run(host=os.getenv('IP'),
-            port=int(os.getenv('PORT', 5000)),
+            port=int(os.getenv('PORT')),
             debug=True)
