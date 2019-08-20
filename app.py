@@ -29,7 +29,7 @@ cuisines = mongo.db.cuisines
 
 def allowed_files(filename):
 
-    Check if filename has an file extension
+    # Check if filename has an file extension
     if '.' not in filename:
         return False
 
