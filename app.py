@@ -1,5 +1,6 @@
 import os
 from flask import Flask, render_template, session, redirect, url_for, request
+from flask import flash
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
@@ -10,10 +11,10 @@ import datetime
 app = Flask(__name__)
 CORS(app)
 
-# app.config.from_pyfile('config.cfg')
-app.config['MONGO_DBNAME'] = os.getenv("MONGO_DBNAME")
-app.config['MONGO_URI'] = os.getenv("MONGO_URI")
-app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+app.config.from_pyfile('config.cfg')
+# app.config['MONGO_DBNAME'] = os.getenv("MONGO_DBNAME")
+# app.config['MONGO_URI'] = os.getenv("MONGO_URI")
+# app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 
 app.config["ALLOWED_EXTENSIONS"] = ['jpg', 'jpeg', 'png']
 # Configures the max filesize to 1MB
@@ -28,7 +29,7 @@ cuisines = mongo.db.cuisines
 
 
 def allowed_files(filename):
-
+    '''Verifies if the file extension is valid format '''
     # Check if filename has an file extension
     if '.' not in filename:
         return False
@@ -38,11 +39,31 @@ def allowed_files(filename):
 
 
 def allowed_image_filesize(filesize):
-
+    '''Checks if the image size does not exceed the limit'''
     if int(filesize) <= app.config["MAX_IMAGE_FILESIZE"]:
         return True
     else:
         return False
+
+# http://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
+# https://pythonhosted.org/Flask-Uploads/
+# https://www.programcreek.com/python/example/105928/flask.request.content_length
+# https://stackoverflow.com/questions/15772975/flask-get-the-size-of-request-files-object
+# https://gist.github.com/bacher09/7231395
+# https://stackoverflow.com/questions/19459236/how-to-handle-413-request-entity-too-large-in-python-flask-server
+# https://opensource.com/article/17/3/python-flask-exceptions
+# https://flask.palletsprojects.com/en/1.1.x/errorhandling/
+# https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-vii-error-handling
+# https://www.geeksforgeeks.org/python-404-error-handling-in-flask/
+# https://damyanon.net/post/flask-series-logging/
+# https://pythonprogramming.net/flask-error-handling-basics/
+
+
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    username = get_user()
+    return render_template('413.html',
+                           username=username), 413
 
 
 def get_user():
@@ -70,7 +91,7 @@ def file(image):
     return mongo.send_file(image)
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
     username = get_user()
     recipes_list = recipes.find()
@@ -98,7 +119,12 @@ def delete_recipe(recipe_id):
     user = get_user()
     recipe_to_delete = recipes.find_one({'_id': ObjectId(recipe_id)})
 
+    files = mongo.db.fs.files
+
     if (str(user['_id']) == str(recipe_to_delete['user_id'])) and (str(recipe_to_delete['_id']) == recipe_id):
+        image_filename = str(recipe_to_delete['image'])
+        image_to_delete = files.find_one({'filename': str(image_filename)})
+        files.delete_one({'_id': ObjectId(image_to_delete['_id'])})
         recipe = recipes.delete_one({'_id': ObjectId(recipe_id)})
 
     return redirect(url_for('index'))
@@ -178,7 +204,7 @@ def new_recipe():
         image_filename = ''
 
 # Test if a file was submitted and it is an image file
-# via allowed_imaged function
+# via allowed_files function
         if request.files:
             image = request.files['image']
             if image.filename != '' and allowed_files(image.filename):
@@ -245,6 +271,16 @@ def recipe(recipe_id):
         textarea_instructions = request.form['instructions']
         instructions = textarea_instructions.split('\n')
 
+        image_filename = ''
+# Test if a file was submitted and it is an image file
+# via allowed_files function
+        if request.files:
+            image = request.files['image']
+            if image.filename != '' and allowed_files(image.filename):
+                image_filename = secure_filename(image.filename)
+        else:
+            image_filename = ''
+
         recipe = recipes.update_one({'_id': ObjectId(recipe_id)}, {'$set': {
             'name': request.form['name'],
             'description': request.form['description'],
@@ -255,6 +291,16 @@ def recipe(recipe_id):
             'instructions': instructions,
             'cuisine': request.form['cuisine'],
             'last_update': datetime.datetime.isoformat(datetime.datetime.now())}})
+
+# Save image file in the database if image_filename is not empty
+# and update the image filename in the recipe document.
+# It also ensures an unique filename for each image uploaded by
+# adding the recipe's _id and the current date and time to the image's name.
+        if image_filename != '':
+            image_filename = str(ObjectId(recipe_id)) + str(datetime.datetime.isoformat(datetime.datetime.now())) + image_filename
+            mongo.save_file(image_filename, image)
+            recipes.update_one({'_id': ObjectId(recipe_id)},
+                               {'$set': {'image': image_filename}})
 
         recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
         if recipe:
@@ -373,6 +419,6 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(host=os.environ.get('IP'),
-            port=int(os.environ.get('PORT')),
+    app.run(host=os.getenv('IP'),
+            port=int(os.getenv('PORT', 5000)),
             debug=True)
