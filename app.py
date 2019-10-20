@@ -45,19 +45,6 @@ def allowed_image_filesize(filesize):
     else:
         return False
 
-# http://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
-# https://pythonhosted.org/Flask-Uploads/
-# https://www.programcreek.com/python/example/105928/flask.request.content_length
-# https://stackoverflow.com/questions/15772975/flask-get-the-size-of-request-files-object
-# https://gist.github.com/bacher09/7231395
-# https://stackoverflow.com/questions/19459236/how-to-handle-413-request-entity-too-large-in-python-flask-server
-# https://opensource.com/article/17/3/python-flask-exceptions
-# https://flask.palletsprojects.com/en/1.1.x/errorhandling/
-# https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-vii-error-handling
-# https://www.geeksforgeeks.org/python-404-error-handling-in-flask/
-# https://damyanon.net/post/flask-series-logging/
-# https://pythonprogramming.net/flask-error-handling-basics/
-
 
 @app.errorhandler(413)
 def request_entity_too_large(error):
@@ -142,6 +129,7 @@ def register():
         existing_user = users.find_one({'username': request.form['username']})
 
         if existing_user:
+            flash('Username already exists')
             return render_template('register.html', username=username, error='User already exists!')
 
         password = generate_password_hash(request.form['password'], method='sha256')
@@ -352,11 +340,11 @@ def likes(recipe_id):
                                         {'$addToSet': {
                                             'likes': ObjectId(recipe_id)}})
         else:
-            recipe = recipes.update_one({'_id': ObjectId(recipe_id)}, {'$set': {
-                'likes': likes + 1
-            }})
+            recipe = recipes.update_one({'_id': ObjectId(recipe_id)},
+                                        {'$set': {'likes': likes + 1}})
             user = users.update_one({'_id': ObjectId(username['_id'])},
-                                    {'$addToSet': {'likes': ObjectId(recipe_id)}})
+                                    {'$addToSet': {'likes': ObjectId(recipe_id)
+                                                   }})
 
     return redirect(url_for('load_recipes',
                             recipe_id=recipe_id,
