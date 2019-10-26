@@ -9,13 +9,36 @@
 
 {% block content %}
 <section>
-    <div class="jumbotron jumbotron-fluid text-white">
+    <div class="jumbotron jumbotron-fluid text-white mb-0">
         <div class="container">
             <h1 class="display-4">Healthy Cookbook</h1>
             <p class="lead">Your collection of healty choices in the kitchen</p>
         </div>
     </div>
 </section>
+
+ <hr class="my-2">
+ <div class="nav">
+     <form method="POST" class="form-inline col-sm-12" action="{{ url_for('index') }}">
+         <select class="form-control form-control-sm">
+             <option value="" selected>Cuisine</option>
+             {% for cuisine in cuisines %}
+             <option value="{{ cuisine }}">{{ cuisine }}</option>
+             {% endfor %}
+         </select>
+
+         <select class="form-control form-control-sm ml-2">
+             <option value="" selected>Order by:</option>
+             <option value="name">Name</option>
+             <option value="likes">Likes</option>
+             <option value="date">Most recent</option>
+         </select>
+         <input class="form-control form-control-sm ml-3" name="filter" type="search" placeholder="Search"
+             aria-label="Filter">
+         <button class="btn btn-sm btn-outline-secondary ml-2 my-2 my-sm-0" type="submit">filter</button>
+     </form>
+ </div>
+ <hr class="my-2">
 
 <section class="container">
 

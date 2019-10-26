@@ -78,14 +78,19 @@ def file(image):
     return mongo.send_file(image)
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
     username = get_user()
     recipes_list = recipes.find()
+    cuisines = get_cuisine()
+
+    if request.method == 'POST':
+        pass
 
     return render_template('index.html',
                            recipes=recipes_list,
-                           username=username)
+                           username=username,
+                           cuisines=cuisines)
 
 
 @app.route('/search', methods=['GET', 'POST'])
