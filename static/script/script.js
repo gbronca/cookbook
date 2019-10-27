@@ -24,8 +24,6 @@ Filevalidation = () => {
 					'The image file is too big. Maximum allowed file size is 1Mb. Please select a smaller file size');		
 			} else {
 				imageLabel.innerHTML = imageFile.value;
-				// document.getElementById('size').innerHTML = '<b>'
-				// + imageFile + '</b> KB'; 
 			} 
 		} 
 	} 

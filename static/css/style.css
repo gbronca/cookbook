@@ -5,6 +5,12 @@
     font-family: 'Open Sans', sans-serif;
 }
 
+.container-fluid {
+    max-width: 1300px;
+    padding-left: 0;
+    padding-right: 0;
+}
+
 .jumbotron {
     background: url('/static/images/background-home.jpg');
     background-size: cover;
@@ -17,6 +23,13 @@
 .form-search {
     margin: 0 10px 10px 5px;
 }
+
+/* Register */
+
+.register-header {
+    padding: 10px 0;
+}
+
 /* New Recipes */
 
 .new-recipe-header {
@@ -30,14 +43,6 @@
     max-width: 100%;
     padding-bottom: 10px;
 }
-
-/* Register */
-
-.register-header {
-    padding: 10px 0;
-}
-
-/* Recipe */
 
 .recipe-form {
     padding-bottom: 60px;

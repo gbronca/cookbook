@@ -1,3 +1,4 @@
+{% from '_nav.html' import show_links %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,20 +9,18 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" crossorigin="anonymous">
     <link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}"/>
+    <!-- favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="{{url_for('static', filename='images/favicon.ico')}}">
     
     <title>{% block title %}{% endblock %}</title>
 </head>
 
 <body>
+    <header class="container-fluid">
+        {% block nav %} {{ show_links(username) }} {% endblock %}
+    </header>
 
-    {% block nav %}{% endblock %}
-
-    <main id="main" class="container">
-
-        {% block content %}{% endblock %}
-    
-    </main>
+    {% block content %}{% endblock %}
     
     <!--Bootstrap scripts -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
@@ -29,6 +28,5 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
      <!--End of Bootstrap scripts -->
     <script src="{{url_for('static', filename='script/script.js')}}"></script>
-
 </body>
 </html>

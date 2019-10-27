@@ -7,31 +7,33 @@
 {{ show_links(username) }}
 {% endblock %}
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-sm-12 col-md-8">
-        <div class="register-header">
-            <h1>Search Result</h1>
+<main class="container">
+    <div class="row justify-content-center">
+        <div class="col-sm-12 col-md-8">
+            <div class="register-header">
+                <h1>Search Result</h1>
+            </div>
         </div>
-    </div>
 
-    <div class="col-sm-12 col-md-8">
-        {% for recipe in recipes %}
-        <div class="card border-success mb-3 mt-2">
-            <div class="row no-gutters">
-                <div class="col-md-4">
-                    <img src="{{ url_for('file', image=recipe['image']) }}" class="card-img" alt="{{ recipe.name }}">
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <a class="card-link text-dark" href="{{ url_for('recipe', recipe_id=recipe['_id']) }}">
-                            <h5 class="card-title card-link">{{ recipe.name|truncate(50, True) }}</h5>
-                            <p class="card-text">{{ recipe.description|truncate(150, True) }}</p>
-                        </a>
+        <div class="col-sm-12 col-md-8">
+            {% for recipe in recipes %}
+            <div class="card border-success mb-3 mt-2">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src="{{ url_for('file', image=recipe['image']) }}" class="card-img" alt="{{ recipe.name }}">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <a class="card-link text-dark" href="{{ url_for('recipe', recipe_id=recipe['_id']) }}">
+                                <h5 class="card-title card-link">{{ recipe.name|truncate(50, True) }}</h5>
+                                <p class="card-text">{{ recipe.description|truncate(150, True) }}</p>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
-</div>
+</main>
 {% endblock %}
