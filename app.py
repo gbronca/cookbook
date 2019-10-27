@@ -85,7 +85,24 @@ def index():
     cuisines = get_cuisine()
 
     if request.method == 'POST':
-        pass
+        cuisine = {'$exists': True}
+        order = 'create_date'
+
+        if request.form['order']:
+            order = request.form['order']
+
+        if request.form['cuisine']:
+            cuisine = request.form['cuisine']
+
+        if request.form['filter']:
+            recipes_list = recipes.find({'$text': {'$search': request.form['filter']}, 'cuisine': cuisine}).sort(order)
+        else:
+            recipes_list = recipes.find({'cuisine': cuisine}).sort(order)
+
+        # return render_template('index.html',
+        #                        recipes=recipes_list,
+        #                        username=username,
+        #                        cuisines=cuisines)
 
     return render_template('index.html',
                            recipes=recipes_list,
@@ -97,7 +114,10 @@ def index():
 def find_recipe():
     username = get_user()
     if request.method == 'POST':
-        searched_recipes = recipes.find({'$text': {'$search': request.form['search']}}).sort('name')
+        if request.form['search']:
+            searched_recipes = recipes.find({'$text': {'$search': request.form['search']}}).sort('name')
+        else:
+            searched_recipes = recipes.find()
 
         return render_template('search.html',
                                recipes=searched_recipes,

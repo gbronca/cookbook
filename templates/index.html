@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% from '_nav.html' import show_links %}
+{% from '_search.html' import search_bar %}
 
 {% block title %}Recipes Home Page{% endblock %}
 
@@ -17,28 +18,32 @@
     </div>
 </section>
 
- <hr class="my-2">
- <div class="nav">
-     <form method="POST" class="form-inline col-sm-12" action="{{ url_for('index') }}">
-         <select class="form-control form-control-sm">
-             <option value="" selected>Cuisine</option>
-             {% for cuisine in cuisines %}
-             <option value="{{ cuisine }}">{{ cuisine }}</option>
-             {% endfor %}
-         </select>
+{% block search %}
+{{ search_bar(cuisines) }}
+{% endblock %}
+<!-- <hr class="my-2">
+<div class="nav">
+    <form method="POST" class="form-inline col-sm-12" action="{{ url_for('index') }}">
+        <select name="cuisine" id="cuisine" class="form-control form-control-sm">
+            <option value="" selected>Cuisine</option>
+            {% for cuisine in cuisines %}
+            <option value="{{ cuisine }}">{{ cuisine }}</option>
+            {% endfor %}
+        </select>
 
-         <select class="form-control form-control-sm ml-2">
-             <option value="" selected>Order by:</option>
-             <option value="name">Name</option>
-             <option value="likes">Likes</option>
-             <option value="date">Most recent</option>
-         </select>
-         <input class="form-control form-control-sm ml-3" name="filter" type="search" placeholder="Search"
-             aria-label="Filter">
-         <button class="btn btn-sm btn-outline-secondary ml-2 my-2 my-sm-0" type="submit">filter</button>
-     </form>
- </div>
- <hr class="my-2">
+        <select name="order" id="order" class="form-control form-control-sm ml-sm-2">
+            <option value="" selected>Order by:</option>
+            <option value="name">Name</option>
+            <option value="likes">Likes</option>
+            <option value="create_date">Most recent</option>
+        </select>
+        <input class="form-control form-control-sm ml-sm-2" name="filter" type="search" placeholder="Search"
+            aria-label="Filter">
+        <button class="btn btn-sm btn-outline-secondary ml-sm-2 my-sm-0 my-md-2" type="submit">filter</button>
+        <button class="btn btn-sm btn-outline-secondary ml-sm-2 my-sm-0 my-md-2" type="reset">reset</button>
+    </form>
+</div>
+<hr class="my-2"> -->
 
 <section class="container">
 

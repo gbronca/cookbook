@@ -1,0 +1,39 @@
+{% macro search_bar(cuisines) %}
+
+
+<hr class="mt-2 mb-0">
+<div class="navbar navbar-expand-lg navbar-light p-md-0">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#search-bar"
+        aria-controls="search-bar" aria-expanded="false" aria-label="Toggle navigation">
+        <span>
+            <i class="fas fa-chevron-down"></i>
+        </span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="search-bar">
+        <div class="nav">
+            <form method="POST" class="form-inline col-sm-12" action="{{ url_for('index') }}">
+                <select name="cuisine" id="cuisine" class="form-control form-control-sm">
+                    <option value="" selected>Cuisine</option>
+                    {% for cuisine in cuisines %}
+                    <option value="{{ cuisine }}">{{ cuisine }}</option>
+                    {% endfor %}
+                </select>
+
+                <select name="order" id="order" class="form-control form-control-sm ml-sm-2">
+                    <option value="" selected>Order by:</option>
+                    <option value="name">Name</option>
+                    <option value="likes">Likes</option>
+                    <option value="create_date">Most recent</option>
+                </select>
+                <input class="form-control form-control-sm ml-sm-2" name="filter" type="search" placeholder="Search"
+                    aria-label="Filter">
+                <button class="btn btn-sm btn-outline-secondary ml-sm-2 my-sm-0 my-md-2" type="submit">filter</button>
+                <button class="btn btn-sm btn-outline-secondary ml-sm-2 my-sm-0 my-md-2" type="reset">reset</button>
+            </form>
+        </div>
+    </div>
+</div>
+<hr class="mt-0 mb-2">
+
+{% endmacro %}
