@@ -98,11 +98,6 @@ def index():
         else:
             recipes_list = recipes.find({'cuisine': cuisine}).sort(order)
 
-        # return render_template('index.html',
-        #                        recipes=recipes_list,
-        #                        username=username,
-        #                        cuisines=cuisines)
-
     return render_template('index.html',
                            recipes=recipes_list,
                            username=username,

@@ -1,12 +1,7 @@
 {% extends 'base.html' %}
-<!-- {% from '_nav.html' import show_links %} -->
 {% from '_search.html' import search_bar %}
 
 {% block title %}Recipes Home Page{% endblock %}
-
-<!-- {% block nav %}
-{{ show_links(username) }}
-{% endblock %} -->
 
 {% block content %}
 <section class="container">
@@ -27,7 +22,11 @@
         {% for recipe in recipes %}
         <div class="col-sm-6 col-md-4 col-lg-3 mb-3">
             <div class="card">
-                <img src="{{ url_for('file', image=recipe['image']) }}" class="card-img-top" alt="{{ recipe.name }}">
+                {% if recipe['image'] %}
+                    <img src="{{ url_for('file', image=recipe['image']) }}" class="card-img-top" alt="{{ recipe.name }}">
+                {% else %}
+                    <img src="{{ url_for('static', filename='images/vegetables.jpg') }}" class="card-img-top" alt="{{ recipe.name }}">
+                {% endif %}
                 <div class="card-body">
                     <h5 class="card-title">{{ recipe.name|truncate(35, True) }}</h5>
                     <p class="card-text">{{ recipe.description|truncate(100, True) }}</p>
