@@ -138,6 +138,24 @@
     padding: 3%;
 }
 
+/* Footer */
+
+footer {
+    padding: 10px 0;
+    margin-top: 150px;
+}
+
+.social-footer {
+    margin-right: 5px;
+    font-size: 30px;
+    transition: .5s all ease;
+}
+
+.social-footer:hover {
+    font-size: 40px;
+    margin-top: -10px;
+}
+
 /* Media Queries */
 
 @media screen and (min-width: 568px) {
@@ -154,5 +172,21 @@
     .recipes-image {
         max-width: 90%;
         text-align: center;
+    }
+
+    footer {
+        margin-top: 50px;
+    }
+
+    .social-footer {
+        font-size: 15px;
+    }
+
+    .social-footer:hover {
+        font-size: 20px;
+    }
+
+    .paragraph-footer {
+        font-size: 10px;
     }
 }

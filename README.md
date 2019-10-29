@@ -108,7 +108,7 @@ The project is hosted on Heroku. In order for it to run correctly the following 
 
 * The last step is to setup the enviroment variables in Settings, Config Vars.
 
-```
+```python
 MONGO_DBNAME
 MONGO_URI
 SECRET_KEY
@@ -127,7 +127,6 @@ IP
 * setup the environment variables
 
 ```python
-app.config.from_pyfile('config.cfg')
 app.config['MONGO_DBNAME'] = os.getenv("MONGO_DBNAME")
 app.config['MONGO_URI'] = os.getenv("MONGO_URI")
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
