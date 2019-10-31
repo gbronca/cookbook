@@ -11,10 +11,9 @@ import datetime
 app = Flask(__name__)
 CORS(app)
 
-app.config.from_pyfile('config.cfg')
-# app.config['MONGO_DBNAME'] = os.getenv("MONGO_DBNAME")
-# app.config['MONGO_URI'] = os.getenv("MONGO_URI")
-# app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+app.config['MONGO_DBNAME'] = os.getenv("MONGO_DBNAME")
+app.config['MONGO_URI'] = os.getenv("MONGO_URI")
+app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 
 app.config["ALLOWED_EXTENSIONS"] = ['jpg', 'jpeg', 'png']
 # Configures the max filesize to 1MB
@@ -436,4 +435,4 @@ def logout():
 if __name__ == '__main__':
     app.run(host=os.getenv('IP'),
             port=int(os.getenv('PORT', 5000)),
-            debug=True)
+            debug=False)
