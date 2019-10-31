@@ -11,10 +11,10 @@ import datetime
 app = Flask(__name__)
 CORS(app)
 
-# app.config.from_pyfile('config.cfg')
-app.config['MONGO_DBNAME'] = os.getenv("MONGO_DBNAME")
-app.config['MONGO_URI'] = os.getenv("MONGO_URI")
-app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+app.config.from_pyfile('config.cfg')
+# app.config['MONGO_DBNAME'] = os.getenv("MONGO_DBNAME")
+# app.config['MONGO_URI'] = os.getenv("MONGO_URI")
+# app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 
 app.config["ALLOWED_EXTENSIONS"] = ['jpg', 'jpeg', 'png']
 # Configures the max filesize to 1MB
@@ -48,9 +48,7 @@ def allowed_image_filesize(filesize):
 
 @app.errorhandler(413)
 def request_entity_too_large(error):
-    username = get_user()
-    return render_template('413.html',
-                           username=username), 413
+    return redirect(url_for('index'))
 
 
 def get_user():
@@ -87,17 +85,26 @@ def index():
     if request.method == 'POST':
         cuisine = {'$exists': True}
         order = 'create_date'
+        # Desccending order
+        direction = -1
 
         if request.form['order']:
             order = request.form['order']
+            if order == 'name':
+                # Ascending order
+                direction = 1
 
         if request.form['cuisine']:
             cuisine = request.form['cuisine']
 
         if request.form['filter']:
-            recipes_list = recipes.find({'$text': {'$search': request.form['filter']}, 'cuisine': cuisine}).sort(order)
+            recipes_list = recipes.find({'$text':
+                                        {'$search': request.form['filter']},
+                                        'cuisine': cuisine}).sort(order,
+                                                                  direction)
         else:
-            recipes_list = recipes.find({'cuisine': cuisine}).sort(order)
+            recipes_list = recipes.find({'cuisine': cuisine}).sort(order,
+                                                                   direction)
 
     return render_template('index.html',
                            recipes=recipes_list,
@@ -429,4 +436,4 @@ def logout():
 if __name__ == '__main__':
     app.run(host=os.getenv('IP'),
             port=int(os.getenv('PORT', 5000)),
-            debug=False)
+            debug=True)

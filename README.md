@@ -1,6 +1,6 @@
 # Cookbook Project
 
-About a year ago I have decided to adopt a helthier lifestyle and part of this change was based on health eating. I have seen several interesting recipes online but had no system to store them so I could refer back when needed.
+About a year ago I have decided to adopt a healthier lifestyle and part of this change was based on healthy eating. I have seen several interesting recipes online but had no system to store them so I could refer back when needed.
 
 The idea of building a recipes website for my 4th project for the Code Institute Full Stack Developer Course was just inline with a personal project.
 
@@ -10,49 +10,40 @@ The Recipes app can be viewed [here](http://gb-cookbook.herokuapp.com/)
 
 ### User Stories
 
-1. As a visitor, I would like to be able to browse and search for recipes that fit some specific criterias.
+1. As a visitor, I would like to be able to browse and search for recipes that fit some specific criteria.
 
-2. As a registered user, I should be able to like recipes
+2. A user should be able to search for recipes by name.
 
-3. A user should be able to search for most liked recipes.
+3. A user should be able to search for recipes by popularity (likes).
 
-4. A user should be able to create an account.
+4. A user should be able to search for recipes by cuisine.
 
-5. A registered user should be able to add recipes and edit the recipes he/she have added.
+5. A user should be able to open a recipe and see ingredients, instructions and cooking time.
 
-### Database Schema
+6. A user can create an account.
 
-The basic database diagram is as follow:
+7. A registered user:
+    * Can like recipes;
+    * Flag recipes as cooked, meaning they have tried it;
+    * Can add new recipes to the site;
+    * Can edit their recipes;
+    * Can delete their recipe.
 
-![Database Diagram](docs/database/cookbook-database-diagram.png)
+### Features
 
-More information can be read in [Cookbook Documentation](docs/database/Cookbook-documentation.pdf)
+* User registration: although it is a simple user registration, the password is encrypted using generate_password_hash function from Werkzeug Security module.
 
-### Wireframes
-
-Some of the features of the original wireframes were modified in order to simplify the design and to dedicate enough time on the backend of the project.
-
-![Home page Desktop version](docs/wireframes/home-page.png)
-
-![New Recipe Desktop version](docs/wireframes/add-recipe-page.png)
-
-![User Account Desktop version](docs/wireframes/user-account-page.png)
-
-## Features
-
-* User registration: although ait is a simple user registration, the password is encrypted using generate_password_hash function from Werkzeug Security module.
-
-* User login: Allows a user to login on the app. Once a user is logged in, it allows a user to like recipes, mark them as cooked, add new recipes and even edit/delete the ones created by the user.
+* User login: Allows a user to log in on the app. Once a user is logged in, it allows a user to like recipes, mark them as cooked, add new recipes and even edit/delete the ones created by the user.
 
 * Search tab: Allow users to search a recipe by cuisine, likes/most recent/name and/or keyword.
 
-* Search box in the navigation menu: Lists all recipes with the searched keyword.
+* A Search box in the navigation menu: Lists all recipes with the searched keyword.
 
 * User page: List all recipes uploaded by the user, with the option to edit or delete the recipe.
 
-* Recipe page: presents information and instructions about a specific recipe. If the recipe belongs to the user, the system alows the user to edit the recipe.
+* Recipe page: presents information and instructions about a specific recipe. If the recipe belongs to the user, the system allows the user to edit the recipe.
 
-### Fase 2 features
+#### features to add
 
 * Ability to like a recipe from the main page, if the user is logged in.
 
@@ -63,6 +54,26 @@ Some of the features of the original wireframes were modified in order to simpli
 * Add cuisines
 
 * Export to PDF
+
+* Save all images in AWS instead of MongoDB.
+
+* If there is a server error, an error page should show with an error message and redirect the user to the main page after a couple of seconds.
+
+### Wireframes
+
+![Home page Desktop version](docs/wireframes/home-page.png)
+
+![New Recipe Desktop version](docs/wireframes/add-recipe-page.png)
+
+![User Account Desktop version](docs/wireframes/user-account-page.png)
+
+## Database Schema
+
+The basic database diagram is as follow:
+
+![Database Diagram](docs/database/cookbook-database-diagram.png)
+
+More information can be read in [Cookbook Documentation](docs/database/Cookbook-documentation.pdf)
 
 ## Technologies
 
@@ -76,19 +87,25 @@ Some of the features of the original wireframes were modified in order to simpli
 
 * [Python 3](https://www.python.org/)
 
+* [Flask](https://flask.palletsprojects.com/en/1.1.x/)
+
 * [MongoDB](https://www.mongodb.com/)
 
 ## Tests
 
-All pages have been tested extensively during development by myself. Once deployed, the app was tested by a small number of people, mainly family members and work coleagues that have reported any issues they have found.
+All pages have been tested extensively during development by myself. Once deployed, the app was tested by a small number of people, mainly family members and work colleagues that have reported any issues they have found.
+
+I've personally tested the site on Firefox, Safari and Chrome for macOS and the same browsers for in Windows 10.
+
+The site was tested for responsiveness using devtools and also running the app on the iPhone.
 
 * HTML validated by [The W3C Markup Validation Service](https://validator.w3.org/)
 
 * CSS validated by [The W3C CSS Validation Service - Jigsaw](https://jigsaw.w3.org/css-validator/)
 
-* Python compliant to PEP8 via [Pylint](https://pylint.org/). The only present issue is some lines of code are slightly longer than 79 characters.
+* Python compliant to PEP8 via [Pylint](https://pylint.org/).
 
-## Compatibility
+### Compatibility
 
 Tested on:
 
@@ -100,13 +117,15 @@ Tested on:
 
 ## Deployment
 
-The project is hosted on Heroku. In order for it to run correctly the following is required:
+The project is hosted on Heroku. For it to run correctly the following is required:
 
 * A Procfile that instructs Heroku how to run the app.
 
 * requirements.txt. This file informs Heroku what dependencies are required to run the app correctly. It is created by typing on the terminal `pip freeze > requirements.txt`.
 
-* The last step is to setup the enviroment variables in Settings, Config Vars.
+* Create a new app in Heroku
+
+* Setup in Heroku the environment variables required to successfully run the app in Settings, Config Vars.
 
 ```python
 MONGO_DBNAME
@@ -116,9 +135,9 @@ PORT
 IP
 ```
 
-* Because Heroku is already connected to my Github account, I only had to connect the created heroku app to the Github repository and set up the automatic deployment.
+* Connect Heroku to the project's repository on Github and setup automatic deployment. Heroku then will build a new version of the app every time a new deployment is pushed to Github.
 
-## Local Deployment
+### Local Deployment
 
 * Clone the repository
 
@@ -132,4 +151,4 @@ app.config['MONGO_URI'] = os.getenv("MONGO_URI")
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 ```
 
-* On terminal type `python3 app.py`
+* On terminal type `python3 app.py` to run the app.
